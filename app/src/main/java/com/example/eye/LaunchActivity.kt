@@ -1,6 +1,7 @@
 package com.example.eye
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -87,7 +88,7 @@ class LaunchActivity : AppCompatActivity() {
 
         binding.btAdd.setOnClickListener {
 
-
+            startActivity(Intent(this , AddUserActivity::class.java))
 /*
             val user = User(
                 0, "اکبر", "اسلامی", "09137707200", "30254512365", "علی محمدی",
@@ -96,8 +97,10 @@ class LaunchActivity : AppCompatActivity() {
             )
             // viewModel.deleteUser(user)
             viewModel.insertUser(user)
-*/
+
          //   viewModel.deleteAllUser()
+
+ */
         }
     }
 

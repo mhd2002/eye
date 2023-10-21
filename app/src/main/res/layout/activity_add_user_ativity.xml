@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddUserActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+
+            <EditText
+                android:id="@+id/ed_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="نام"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_lastname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="نام خانوادگی"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_name" />
+
+            <EditText
+                android:id="@+id/ed_codemeli"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="کدملی "
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_lastname" />
+
+            <EditText
+                android:id="@+id/ed_phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="شماره تماس"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_codemeli"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_doctor"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="دکتر"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_phoneNumber"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_prescriptionDate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="تاریخ نسخه"
+                android:inputType=""
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_doctor"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_purchaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="تاریخ خرید"
+                android:inputType="datetime"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_prescriptionDate"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_money"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="قیمت"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_purchaseDate"
+
+                />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/rb_liner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_money">
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="24dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+
+                    >
+
+                    <RadioButton
+                        android:id="@+id/rb_check"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="48dp"
+                        android:gravity="left"
+                        android:text="چکی"
+                        android:textSize="24dp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="نقدی"
+                        android:textSize="24dp" />
+                </RadioGroup>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <EditText
+                android:id="@+id/ed_RightEye"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="نمره چشم راست"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rb_liner"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_LeftEye"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="نمره چشم چپ"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_RightEye"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_pd"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="pd"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_LeftEye"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_insurance"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+
+                android:layout_marginRight="24dp"
+                android:hint="بیمه"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_pd"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_insuranceStocks"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="سهم بیمه"
+                android:inputType="numberDecimal"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_insurance"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_organization"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="سازمان"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_insuranceStocks"
+
+                />
+
+            <EditText
+                android:id="@+id/ed_ext"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:hint="توضیحات"
+
+                android:inputType="text"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                android:gravity="top"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_organization"
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
