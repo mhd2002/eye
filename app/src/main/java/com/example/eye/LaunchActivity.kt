@@ -7,11 +7,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
+import androidx.compose.animation.core.animateDpAsState
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.example.eye.RoomDatabase.User
 import com.example.eye.databinding.ActivityLaunchBinding
 import com.example.eye.recyclerView.PatientAdapter
 import com.example.eye.recyclerView.PatientData
+import com.example.eye.viewModel.MainActivityViewModel
 
 @SuppressLint("CustomSplashScreen")
 class LaunchActivity : AppCompatActivity() {
@@ -19,6 +24,7 @@ class LaunchActivity : AppCompatActivity() {
     lateinit var binding: ActivityLaunchBinding
     private var mList = ArrayList<PatientData>()
     private lateinit var adapter: PatientAdapter
+    lateinit var viewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +34,16 @@ class LaunchActivity : AppCompatActivity() {
         binding.recyclerXml.setHasFixedSize(true)
         binding.recyclerXml.layoutManager = LinearLayoutManager(this)
 
-        addDataToList()
-        adapter = PatientAdapter(mList , this)
+        adapter = PatientAdapter(mList, this)
         binding.recyclerXml.adapter = adapter
+        adapter.setOnClickListener(object : PatientAdapter.OnClickListener {
+            override fun onClick(position: Int) {
+
+                Toast.makeText(this@LaunchActivity, position.toString(), Toast.LENGTH_SHORT).show()
+
+            }
+
+        })
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -45,15 +58,47 @@ class LaunchActivity : AppCompatActivity() {
 
         })
 
-        adapter.setOnClickListener(object : PatientAdapter.OnClickListener{
-            override fun onClick(position: Int) {
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        viewModel.getAllUsers()
+        viewModel.getAllUsersService().observe(this, Observer {
 
-                Toast.makeText(this@LaunchActivity, position.toString(), Toast.LENGTH_SHORT).show()
+            try {
+                mList.clear()
+                adapter.notifyDataSetChanged()
+                for (i in it) {
 
+
+                    mList.add(
+                        PatientData(
+                            " نام و نام خانوادگی : ${i.name} ${i.lastName}",
+                            "کد ملی : " + i.codeMeli
+                        )
+                    )
+                    adapter.notifyDataSetChanged()
+
+
+                }
+
+            } catch (e: Exception) {
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
             }
 
         })
 
+        binding.btAdd.setOnClickListener {
+
+
+/*
+            val user = User(
+                0, "اکبر", "اسلامی", "09137707200", "30254512365", "علی محمدی",
+                "1402/02/05", "1402/03/06", "1200000", "1", "20", "40",
+                "70", "تعمین اجتماعی", "50٪", "لتسلس", "ثبثبثبثب"
+            )
+            // viewModel.deleteUser(user)
+            viewModel.insertUser(user)
+*/
+         //   viewModel.deleteAllUser()
+        }
     }
 
     private fun filterList(query: String?) {
@@ -78,18 +123,8 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
-    private fun addDataToList() {
-
-            val name = "نام و نام خانوادگی : "
-            val  meli= "کد ملی : "
-
-        mList.add(PatientData(name+"محمد مهدی رنحبر", meli+"3080377451"))
-        mList.add(PatientData(name+"علی علوی", meli+"1230377102"))
-        mList.add(PatientData(name+"حسین عسکری", meli+"1020384125"))
-        mList.add(PatientData(name+"محمد امین رونقی", meli+"1234567891"))
-        mList.add(PatientData(name+"محمد طاها تهمورسی", meli+"1203597514"))
-        mList.add(PatientData(name+"بارسا بوراحمدی", meli+"4593202478"))
-        mList.add(PatientData(name+"مبین عاقلی", meli+"36298754154"))
-        mList.add(PatientData(name+"متین نوش زاده", meli+"7912436518"))
+    override fun onStart() {
+        viewModel.getAllUsers()
+        super.onStart()
     }
 }
