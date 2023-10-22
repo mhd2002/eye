@@ -26,7 +26,9 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
+
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="نام"
                 android:inputType="text"
                 android:padding="4dp"
@@ -42,10 +44,12 @@
             <EditText
                 android:id="@+id/ed_lastname"
                 android:layout_width="match_parent"
+
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="نام خانوادگی"
                 android:inputType="text"
                 android:padding="4dp"
@@ -63,8 +67,10 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="کدملی "
                 android:inputType="numberDecimal"
+                android:maxLength="10"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"
@@ -80,8 +86,10 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="شماره تماس"
                 android:inputType="numberDecimal"
+                android:maxLength="11"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"
@@ -98,7 +106,9 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
+
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="دکتر"
                 android:inputType="text"
                 android:padding="4dp"
@@ -111,13 +121,15 @@
 
                 />
 
-            <EditText
+            <Button
                 android:id="@+id/ed_prescriptionDate"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
+                android:gravity="right|center"
                 android:hint="تاریخ نسخه"
                 android:inputType=""
                 android:padding="4dp"
@@ -130,14 +142,16 @@
 
                 />
 
-            <EditText
+            <Button
                 android:id="@+id/ed_purchaseDate"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="تاریخ خرید"
+                android:gravity="right|center"
                 android:inputType="datetime"
                 android:padding="4dp"
                 android:textColor="@color/black"
@@ -155,7 +169,9 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
+
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="قیمت"
                 android:inputType="numberDecimal"
                 android:padding="4dp"
@@ -173,19 +189,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:orientation="horizontal"
-                android:padding="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ed_money">
 
                 <RadioGroup
+                    android:id="@+id/radiogroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
                     android:layout_marginLeft="24dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginRight="24dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -221,8 +239,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
+
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="نمره چشم راست"
                 android:inputType="numberDecimal"
                 android:padding="4dp"
@@ -242,12 +262,14 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="نمره چشم چپ"
                 android:inputType="numberDecimal"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"
                 android:textSize="20dp"
+
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ed_RightEye"
@@ -259,8 +281,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
+
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="pd"
                 android:inputType="numberDecimal"
                 android:padding="4dp"
@@ -279,8 +303,9 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
-
                 android:layout_marginRight="24dp"
+
+                android:background="@drawable/bt_background"
                 android:hint="بیمه"
                 android:inputType="text"
                 android:padding="4dp"
@@ -300,8 +325,10 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="سهم بیمه"
                 android:inputType="numberDecimal"
+                android:maxLength="3"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"
@@ -319,6 +346,7 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
                 android:hint="سازمان"
                 android:inputType="text"
                 android:padding="4dp"
@@ -338,19 +366,36 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
+                android:gravity="top"
                 android:hint="توضیحات"
-
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"
                 android:textSize="20dp"
-                android:gravity="top"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ed_organization"
 
                 />
+
+            <Button
+                android:id="@+id/bt_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bt_background"
+                android:text="ذخیره"
+                android:textSize="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_ext" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

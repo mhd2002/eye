@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+
 }
 
 android {
@@ -56,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.github.aliab:Persian-Date-Picker-Dialog:1.8.0")
 
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     kapt ("androidx.lifecycle:lifecycle-common-java8:2.6.2")
