@@ -41,10 +41,12 @@ class PatientAdapter(var mList: List<PatientData> ,val context: Context) :
        return mList.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PatientViewHolder, position: Int) {
 
-        holder.name.text = (mList[position].nameAndLastname)
-        holder.meli.text = (mList[position].codeMeli)
+        holder.name.text = ( "نام و نام خانوادگی : " + mList[position].name +" "+ mList[position].lastName)
+
+        holder.meli.text = ("کدملی : "+mList[position].codeMeli)
 
         holder.edit.setOnClickListener{
             Toast.makeText(context, "change user", Toast.LENGTH_SHORT).show()

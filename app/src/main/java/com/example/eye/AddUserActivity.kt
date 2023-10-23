@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.eye.RoomDatabase.User
 import com.example.eye.databinding.ActivityAddUserAtivityBinding
 import com.example.eye.viewModel.MainActivityViewModel
@@ -16,8 +17,8 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerListener
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
     lateinit var viewModel: MainActivityViewModel
-    lateinit var purchaseDate : String
-    lateinit var prescriptionDate : String
+    lateinit var purchaseDate: String
+    lateinit var prescriptionDate: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddUserAtivityBinding.inflate(layoutInflater)
@@ -30,16 +31,19 @@ class AddUserActivity : AppCompatActivity() {
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
-                    PersianDatePickerDialog.THIS_YEAR,
-                    PersianDatePickerDialog.THIS_MONTH,
-                    PersianDatePickerDialog.THIS_DAY
-                ).setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR).setShowInBottomSheet(true).setListener(object  : PersianPickerListener{
+                        PersianDatePickerDialog.THIS_YEAR,
+                        PersianDatePickerDialog.THIS_MONTH,
+                        PersianDatePickerDialog.THIS_DAY
+                    ).setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
+                    .setShowInBottomSheet(true).setListener(object : PersianPickerListener {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            purchaseDate = persianPickerDate?.getPersianYear().toString() + "/" + persianPickerDate?.getPersianMonth().toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            purchaseDate = persianPickerDate?.getPersianYear()
+                                .toString() + "/" + persianPickerDate?.getPersianMonth()
+                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
                             binding.edPurchaseDate.text = purchaseDate
-                            binding.edPurchaseDate.hint=""
+                            binding.edPurchaseDate.hint = ""
                         }
 
                         override fun onDismissed() {
@@ -59,13 +63,16 @@ class AddUserActivity : AppCompatActivity() {
                         PersianDatePickerDialog.THIS_YEAR,
                         PersianDatePickerDialog.THIS_MONTH,
                         PersianDatePickerDialog.THIS_DAY
-                    ).setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR).setShowInBottomSheet(true).setListener(object  : PersianPickerListener{
+                    ).setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
+                    .setShowInBottomSheet(true).setListener(object : PersianPickerListener {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            prescriptionDate = persianPickerDate?.getPersianYear().toString() + "/" + persianPickerDate?.getPersianMonth().toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            prescriptionDate = persianPickerDate?.getPersianYear()
+                                .toString() + "/" + persianPickerDate?.getPersianMonth()
+                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
                             binding.edPrescriptionDate.text = prescriptionDate
-                            binding.edPrescriptionDate.hint=""
+                            binding.edPrescriptionDate.hint = ""
                         }
 
                         override fun onDismissed() {
@@ -97,7 +104,7 @@ class AddUserActivity : AppCompatActivity() {
             } else if (binding.edPrescriptionDate.hint == "تاریخ نسخه") {
                 Toast.makeText(this, "لطفا تاریخ نسخه را وارد کنید.", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edPurchaseDate.hint ==  "تاریخ خرید") {
+            } else if (binding.edPurchaseDate.hint == "تاریخ خرید") {
                 Toast.makeText(this, "لطفا تاریخ خرید را وارد کنید.", Toast.LENGTH_SHORT).show()
 
             } else if (binding.edMoney.text.isEmpty()) {
@@ -129,17 +136,36 @@ class AddUserActivity : AppCompatActivity() {
 
             } else {
 
-                Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show()
-                /*
-                val user = User(
-                    0, "اکبر", "اسلامی", "09137707200", "30254512365", "علی محمدی",
-                    "1402/02/05", "1402/03/06", "1200000", "1", "20", "40",
-                    "70", "تعمین اجتماعی", "50٪", "لتسلس", "ثبثبثبثب"
-                )
-                // viewModel.deleteUser(user)
-                viewModel.insertUser(user)
+                val name = binding.edName.text.toString()
+                val lastname = binding.edLastname.text.toString()
+                val phone = binding.edPhoneNumber.text.toString()
+                val codemeli = binding.edCodemeli.text.toString()
+                val doctor = binding.edDoctor.text.toString()
+                val money = binding.edMoney.text.toString()
+                val lefteye = binding.edLeftEye.text.toString()
+                val righteye = binding.edRightEye.text.toString()
+                val pd = binding.edPd.text.toString()
+                val insurance = binding.edInsurance.text.toString()
+                val insuranceSt = binding.edInsuranceStocks.text.toString()
+                val orgi = binding.edOrganization.text.toString()
+                val ext = binding.edExt.text.toString()
+                var pay: String = ""
 
-                 */
+                if (binding.rbCash.isChecked) {
+                    pay = "1"
+                }else if (binding.rbCheck.isChecked ){
+                    pay = "0"
+                }
+
+                val user = User(
+                    0, name, lastname, phone, codemeli, doctor,
+                    prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
+                    pd, insurance, insuranceSt, orgi, ext
+                )
+
+                viewModel.insertUser(user)
+                finish()
+
             }
 
 

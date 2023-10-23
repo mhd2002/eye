@@ -1,9 +1,10 @@
-package com.example.eye.recyclerView
+package com.example.eye.Parcelable
 
-import androidx.room.ColumnInfo
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-data class PatientData(
-    val id: Int,
+@Parcelize
+class UserID(
     val name: String,
     val lastName: String,
     val mobile: String,
@@ -20,5 +21,4 @@ data class PatientData(
     val insuranceStocks: String,
     val organization: String,
     val ext: String
-)
-
+): Parcelable
