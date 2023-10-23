@@ -312,11 +312,11 @@
                 android:textColor="@color/black"
                 android:textDirection="rtl"
                 android:textSize="20dp"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ed_pd"
 
-                />
+                app:layout_constraintTop_toBottomOf="@id/ed_pd" />
 
             <EditText
                 android:id="@+id/ed_insuranceStocks"
