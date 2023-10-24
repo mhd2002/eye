@@ -18,10 +18,27 @@ class ShowUserActivity : AppCompatActivity() {
 
         val user : UserID = intent.getParcelableExtra("ok")!!
 
-        binding.tvMoney.text = separateNumber(user.money.toInt())
+        var pay : String = ""
+        pay = if (user.pay == "0"){
+            "نفدی"
+        }else{
+            "چکی"
+        }
+
+        binding.tvNameAndLastname.text = "نام و نام خانوادگی : " + user.name + " " + user.lastName
+        binding.tvCodemeli.text = "کد ملی : " + user.codeMeli
+        binding.tvPhone.text = "شماره تماس : " + user.mobile
+        binding.tvDoctor.text = "دکتر : " + user.doctor
+        binding.tvDate.text = "تاریخ نسخه : " + user.prescriptionDate + "  " + "تاریخ خرید : " + user.purchaseDate
+        binding.tvMoney.text ="مبلغ : " + separateNumber(user.money.toInt()) + " ( " + pay  + " ) "
+        binding.tvEye.text ="نمره چشم راست : " + user.RightEye + " " + " نمره چشم چپ : " + user.LeftEye
+        binding.tvInsurance.text ="بیمه : " + user.insurance
+        binding.tvPdAndInsuranceSt.text ="سهم بیمه : " + user.insuranceStocks + "           " + "pd : " + user.pd
+        binding.tvOri.text = "سازمان : " + user.organization
+        binding.tvExt.text = "توضیحات : " + user.ext
 
     }
-    fun separateNumber(number: Int): String {
+    private fun separateNumber(number: Int): String {
         val numberString = number.toString()
         val length = numberString.length
         val result = StringBuilder()

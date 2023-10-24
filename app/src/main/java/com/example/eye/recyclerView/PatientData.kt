@@ -1,9 +1,7 @@
 package com.example.eye.recyclerView
 
-import androidx.room.ColumnInfo
-
 data class PatientData(
-    val id: Int,
+    val id: Long,
     val name: String,
     val lastName: String,
     val mobile: String,

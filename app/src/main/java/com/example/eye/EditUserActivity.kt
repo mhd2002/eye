@@ -3,26 +3,29 @@ package com.example.eye
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.DatePicker
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
-import androidx.sqlite.db.SimpleSQLiteQuery
+import com.example.eye.Parcelable.UserID
 import com.example.eye.RoomDatabase.User
-import com.example.eye.databinding.ActivityAddUserAtivityBinding
+import com.example.eye.databinding.ActivityEditUserBinding
 import com.example.eye.viewModel.MainActivityViewModel
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import kotlin.properties.Delegates
 
-class AddUserActivity : AppCompatActivity() {
-    lateinit var binding: ActivityAddUserAtivityBinding
+class EditUserActivity : AppCompatActivity() {
+    lateinit var binding: ActivityEditUserBinding
     lateinit var viewModel: MainActivityViewModel
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
+    var id by Delegates.notNull<Long>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddUserAtivityBinding.inflate(layoutInflater)
+        binding = ActivityEditUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setValue()
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
 
@@ -56,7 +59,6 @@ class AddUserActivity : AppCompatActivity() {
         }
 
         binding.edPrescriptionDate.setOnClickListener {
-            // Toast.makeText(this, "tdjhdtjh", Toast.LENGTH_SHORT).show()
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
@@ -84,7 +86,7 @@ class AddUserActivity : AppCompatActivity() {
             calender.show()
         }
 
-        binding.btSave.setOnClickListener {
+        binding.btUpdate.setOnClickListener {
 
             if (binding.edName.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نام را وارد کنید.", Toast.LENGTH_SHORT).show()
@@ -100,12 +102,6 @@ class AddUserActivity : AppCompatActivity() {
 
             } else if (binding.edDoctor.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نام دکتر را وارد کنید.", Toast.LENGTH_SHORT).show()
-
-            } else if (binding.edPrescriptionDate.hint == "تاریخ نسخه") {
-                Toast.makeText(this, "لطفا تاریخ نسخه را وارد کنید.", Toast.LENGTH_SHORT).show()
-
-            } else if (binding.edPurchaseDate.hint == "تاریخ خرید") {
-                Toast.makeText(this, "لطفا تاریخ خرید را وارد کنید.", Toast.LENGTH_SHORT).show()
 
             } else if (binding.edMoney.text.isEmpty()) {
                 Toast.makeText(this, "لطفا مبلغ را وارد کنید.", Toast.LENGTH_SHORT).show()
@@ -153,24 +149,53 @@ class AddUserActivity : AppCompatActivity() {
 
                 if (binding.rbCash.isChecked) {
                     pay = "1"
-                }else if (binding.rbCheck.isChecked ){
+                } else if (binding.rbCheck.isChecked) {
                     pay = "0"
                 }
 
                 val user = User(
-                    name =  name, lastName =  lastname, mobile = phone, codeMeli =  codemeli, doctor =  doctor,
-                  prescriptionDate =   prescriptionDate,purchaseDate = purchaseDate, money =  money, pay =  pay, RightEye = righteye,
-                  LeftEye =   lefteye, pd = pd, insurance =  insurance, insuranceStocks = insuranceSt, organization =  orgi, ext = ext
+                   id , name, lastname, phone, codemeli, doctor,
+                    prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
+                    pd, insurance, insuranceSt, orgi, ext
                 )
 
-                viewModel.insertUser(user)
+                viewModel.updateUser(user)
                 finish()
 
             }
-
 
         }
 
     }
 
+    fun setValue() {
+        val user: UserID = intent.getParcelableExtra("ok")!!
+
+        binding.edName.setText(user.name)
+        binding.edLastname.setText(user.lastName)
+        binding.edCodemeli.setText(user.codeMeli)
+        binding.edPhoneNumber.setText(user.mobile)
+        binding.edDoctor.setText(user.doctor)
+        binding.edPrescriptionDate.text = user.prescriptionDate
+        binding.edPurchaseDate.text = user.purchaseDate
+        binding.edMoney.setText(user.money)
+        binding.edRightEye.setText(user.RightEye)
+        binding.edLeftEye.setText(user.LeftEye)
+        binding.edPd.setText(user.pd)
+        binding.edInsurance.setText(user.insurance)
+        binding.edInsuranceStocks.setText(user.insuranceStocks)
+        binding.edOrganization.setText(user.organization)
+        binding.edExt.setText(user.ext)
+
+        purchaseDate = user.purchaseDate
+        prescriptionDate = user.prescriptionDate
+
+        id = user.id
+        if (user.pd == "0") {
+            binding.rbCash.toggle()
+
+        } else {
+            binding.rbCheck.toggle()
+        }
+    }
 }

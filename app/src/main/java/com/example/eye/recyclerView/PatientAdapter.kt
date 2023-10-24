@@ -49,13 +49,16 @@ class PatientAdapter(var mList: List<PatientData> ,val context: Context) :
         holder.meli.text = ("کدملی : "+mList[position].codeMeli)
 
         holder.edit.setOnClickListener{
-            Toast.makeText(context, "change user", Toast.LENGTH_SHORT).show()
+
+            if (onClickListener != null) {
+                onClickListener!!.onClick(position , false)
+            }
 
         }
 
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
-                onClickListener!!.onClick(position)
+                onClickListener!!.onClick(position , true)
             }
         }
     }
@@ -65,7 +68,7 @@ class PatientAdapter(var mList: List<PatientData> ,val context: Context) :
 
 
     interface OnClickListener {
-        fun onClick(position: Int)
+        fun onClick(position: Int , item : Boolean)
     }
 
 }

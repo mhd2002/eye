@@ -1,21 +1,20 @@
 package com.example.eye
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.cardview.widget.CardView
-import androidx.compose.animation.core.animateDpAsState
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.eye.Parcelable.UserID
-import com.example.eye.RoomDatabase.User
 import com.example.eye.databinding.ActivityLaunchBinding
 import com.example.eye.recyclerView.PatientAdapter
 import com.example.eye.recyclerView.PatientData
@@ -34,62 +33,162 @@ class LaunchActivity : AppCompatActivity() {
         binding = ActivityLaunchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val booleanValue = sharedPreferences.getBoolean("keyBoolean", false)
+
+        if (!booleanValue){
+
+            val inputEditText = EditText(this)
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("رمز را وارد کنید !")
+            builder.setView(inputEditText) // Set the EditText as the view of the dialog
+
+            builder.setPositiveButton("OK") { _, _ ->
+                val userInput = inputEditText.text.toString()
+
+                if (userInput == "ex@24u5m."){
+
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("keyBoolean", true)
+                    editor.apply()
+
+                }else{
+                    Toast.makeText(this, "رمز اشتباه است.", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            builder.setCancelable(false)
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+        }
+
         initRecyclerView()
 
         adapter.setOnClickListener(object : PatientAdapter.OnClickListener {
-            override fun onClick(position: Int) {
+            override fun onClick(position: Int, item: Boolean) {
 
-                if (binding.searchView.query.toString() == "") {
+                if (item) {
 
-                    val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
+                    if (binding.searchView.query.toString() == "") {
 
-                    val user = UserID(
-                        mList[position].name,
-                        mList[position].lastName,
-                        mList[position].mobile,
-                        mList[position].codeMeli,
-                        mList[position].doctor,
-                        mList[position].prescriptionDate,
-                        mList[position].purchaseDate,
-                        mList[position].money,
-                        mList[position].pay,
-                        mList[position].RightEye,
-                        mList[position].LeftEye,
-                        mList[position].pd,
-                        mList[position].insurance,
-                        mList[position].insuranceStocks,
-                        mList[position].organization,
-                        mList[position].ext
-                    )
+                        val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
 
-                    intent.putExtra("ok" , user)
-                    startActivity(intent)
+                        val userMList = UserID(
+                            mList[position].id,
+                            mList[position].name,
+                            mList[position].lastName,
+                            mList[position].mobile,
+                            mList[position].codeMeli,
+                            mList[position].doctor,
+                            mList[position].prescriptionDate,
+                            mList[position].purchaseDate,
+                            mList[position].money,
+                            mList[position].pay,
+                            mList[position].RightEye,
+                            mList[position].LeftEye,
+                            mList[position].pd,
+                            mList[position].insurance,
+                            mList[position].insuranceStocks,
+                            mList[position].organization,
+                            mList[position].ext
+                        )
 
-                } else {
+                        intent.putExtra("ok", userMList)
+                        startActivity(intent)
 
-                    val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
+                    } else {
 
-                    val user = UserID(
-                        filteredList[position].name,
-                        filteredList[position].lastName,
-                        filteredList[position].mobile,
-                        filteredList[position].codeMeli,
-                        filteredList[position].doctor,
-                        filteredList[position].prescriptionDate,
-                        filteredList[position].purchaseDate,
-                        filteredList[position].money,
-                        filteredList[position].pay,
-                        filteredList[position].RightEye,
-                        filteredList[position].LeftEye,
-                        filteredList[position].pd,
-                        filteredList[position].insurance,
-                        filteredList[position].insuranceStocks,
-                        filteredList[position].organization,
-                        filteredList[position].ext
-                    )
+                        val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
 
-                    intent.putExtra("ok" , user)
-                    startActivity(intent)
+                        val userFilteredList = UserID(
+                            filteredList[position].id,
+                            filteredList[position].name,
+                            filteredList[position].lastName,
+                            filteredList[position].mobile,
+                            filteredList[position].codeMeli,
+                            filteredList[position].doctor,
+                            filteredList[position].prescriptionDate,
+                            filteredList[position].purchaseDate,
+                            filteredList[position].money,
+                            filteredList[position].pay,
+                            filteredList[position].RightEye,
+                            filteredList[position].LeftEye,
+                            filteredList[position].pd,
+                            filteredList[position].insurance,
+                            filteredList[position].insuranceStocks,
+                            filteredList[position].organization,
+                            filteredList[position].ext
+                        )
+
+                        intent.putExtra("ok", userFilteredList)
+                        startActivity(intent)
+
+                    }
+
+                }
+
+                else{
+
+                    if (binding.searchView.query.toString() == "") {
+
+                        val intent = Intent(this@LaunchActivity, EditUserActivity::class.java)
+
+                        val userMList = UserID(
+                            mList[position].id,
+                            mList[position].name,
+                            mList[position].lastName,
+                            mList[position].mobile,
+                            mList[position].codeMeli,
+                            mList[position].doctor,
+                            mList[position].prescriptionDate,
+                            mList[position].purchaseDate,
+                            mList[position].money,
+                            mList[position].pay,
+                            mList[position].RightEye,
+                            mList[position].LeftEye,
+                            mList[position].pd,
+                            mList[position].insurance,
+                            mList[position].insuranceStocks,
+                            mList[position].organization,
+                            mList[position].ext
+                        )
+
+                        intent.putExtra("ok", userMList)
+                        startActivity(intent)
+
+                    }
+
+                    else {
+
+                        val intent = Intent(this@LaunchActivity, EditUserActivity::class.java)
+
+                        val userFilteredList = UserID(
+                            filteredList[position].id,
+                            filteredList[position].name,
+                            filteredList[position].lastName,
+                            filteredList[position].mobile,
+                            filteredList[position].codeMeli,
+                            filteredList[position].doctor,
+                            filteredList[position].prescriptionDate,
+                            filteredList[position].purchaseDate,
+                            filteredList[position].money,
+                            filteredList[position].pay,
+                            filteredList[position].RightEye,
+                            filteredList[position].LeftEye,
+                            filteredList[position].pd,
+                            filteredList[position].insurance,
+                            filteredList[position].insuranceStocks,
+                            filteredList[position].organization,
+                            filteredList[position].ext
+                        )
+
+                        intent.putExtra("ok", userFilteredList)
+                        startActivity(intent)
+
+                    }
+
 
                 }
 
@@ -126,7 +225,7 @@ class LaunchActivity : AppCompatActivity() {
                     mList.add(
 
                         PatientData(
-                            0,
+                            i.id,
                             i.name,
                             i.lastName,
                             i.mobile,
@@ -173,12 +272,13 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         binding.recyclerXml.setHasFixedSize(true)
         binding.recyclerXml.layoutManager = LinearLayoutManager(this)
         adapter = PatientAdapter(mList, this)
         binding.recyclerXml.adapter = adapter
     }
+
     private fun filterList(query: String?) {
         if (query != null) {
 
@@ -186,6 +286,7 @@ class LaunchActivity : AppCompatActivity() {
             for (i in mList) {
                 if (i.name.contains(query) || i.codeMeli.contains(query)) {
                     filteredList.add(i)
+
                 }
 
             }
