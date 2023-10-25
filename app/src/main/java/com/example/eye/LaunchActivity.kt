@@ -57,46 +57,13 @@ class LaunchActivity : AppCompatActivity() {
     private lateinit var adapter: PatientAdapter
     lateinit var viewModel: MainActivityViewModel
     private val filteredList = ArrayList<PatientData>()
+    private lateinit var inputStream: FileInputStream
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLaunchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val booleanValue = sharedPreferences.getBoolean("keyBoolean", false)
-
-
-
-
-
-        if (!booleanValue) {
-
-            val inputEditText = EditText(this)
-            val builder = AlertDialog.Builder(this)
-
-            builder.setTitle("رمز را وارد کنید !")
-            builder.setView(inputEditText)
-
-            builder.setPositiveButton("OK") { _, _ ->
-                val userInput = inputEditText.text.toString()
-
-                if (userInput == "ex@24u5m.") {
-
-                    val editor = sharedPreferences.edit()
-                    editor.putBoolean("keyBoolean", true)
-                    editor.apply()
-
-                } else {
-                    Toast.makeText(this, "رمز اشتباه است.", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            }
-
-            builder.setCancelable(false)
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.show()
-        }
-
+        checkPassWord()
         initRecyclerView()
 
         adapter.setOnClickListener(object : PatientAdapter.OnClickListener {
@@ -304,13 +271,46 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
+    private fun checkPassWord(){
+
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val booleanValue = sharedPreferences.getBoolean("keyBoolean", false)
+
+        if (!booleanValue) {
+
+            val inputEditText = EditText(this)
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("رمز را وارد کنید !")
+            builder.setView(inputEditText)
+
+            builder.setPositiveButton("OK") { _, _ ->
+                val userInput = inputEditText.text.toString()
+
+                if (userInput == "ex@24u5m.") {
+
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("keyBoolean", true)
+                    editor.apply()
+
+                } else {
+                    Toast.makeText(this, "رمز اشتباه است.", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            builder.setCancelable(false)
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+        }
+
+    }
     private fun initRecyclerView() {
         binding.recyclerXml.setHasFixedSize(true)
         binding.recyclerXml.layoutManager = LinearLayoutManager(this)
         adapter = PatientAdapter(mList, this)
         binding.recyclerXml.adapter = adapter
     }
-
     private fun filterList(query: String?) {
         if (query != null) {
 
@@ -333,7 +333,6 @@ class LaunchActivity : AppCompatActivity() {
         }
 
     }
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showPopup(view: View) {
         val popup = PopupMenu(this, view)
@@ -361,8 +360,7 @@ class LaunchActivity : AppCompatActivity() {
 
         popup.show()
     }
-
-    fun checkStoragePermissions(): Boolean {
+    private fun checkStoragePermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
         } else {
@@ -376,7 +374,6 @@ class LaunchActivity : AppCompatActivity() {
     }
 
     private val STORAGE_PERMISSION_CODE = 23
-
     private fun requestForStoragePermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
@@ -415,12 +412,8 @@ class LaunchActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        } else {
-
         }
     }
-
-
     private fun importData() {
 
         if (!checkStoragePermissions()) {
@@ -428,11 +421,16 @@ class LaunchActivity : AppCompatActivity() {
             requestForStoragePermissions()
         }
 
+        try {
+            val downloadFolderPath =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val filePath = File(downloadFolderPath, "exported_data.json")
+            inputStream = FileInputStream(filePath)
 
-        val downloadFolderPath =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val filePath = File(downloadFolderPath, "exported_data.json")
-        val inputStream = FileInputStream(filePath)
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
+
 
         try {
             val inputStreamReader = InputStreamReader(inputStream, Charsets.UTF_8)
@@ -453,21 +451,38 @@ class LaunchActivity : AppCompatActivity() {
             val adapter = moshi.adapter<List<User>>(listType)
             val dataFromJson = adapter.fromJson(jsonString)
 
-            if (dataFromJson != null && dataFromJson.isNotEmpty()) {
+            if (!dataFromJson.isNullOrEmpty()) {
 
-                for (i in dataFromJson) {
-                    viewModel.insertUser(i)
+                if (mList.isEmpty()) {
+
+                    for (i in dataFromJson) {
+
+                        viewModel.insertUser(i)
+                    }
+
+                } else {
+
+                    for (i in dataFromJson) {
+
+                        for (n in mList) {
+
+                            if (i.codeMeli != n.codeMeli) {
+                                viewModel.insertUser(i)
+                            }
+
+                        }
+
+                    }
+
                 }
 
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, e.printStackTrace().toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
         }
 
     }
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun exportData() {
 
@@ -503,23 +518,6 @@ class LaunchActivity : AppCompatActivity() {
             Toast.makeText(this, "file saved in /Download", Toast.LENGTH_SHORT).show()
         }
 
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100) {
-
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-
-            }
-        }
     }
 
     override fun onStart() {
