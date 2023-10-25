@@ -148,9 +148,9 @@ class EditUserActivity : AppCompatActivity() {
                 var pay: String = ""
 
                 if (binding.rbCash.isChecked) {
-                    pay = "1"
-                } else if (binding.rbCheck.isChecked) {
                     pay = "0"
+                } else if (binding.rbCheck.isChecked) {
+                    pay = "1"
                 }
 
                 val user = User(
@@ -191,7 +191,7 @@ class EditUserActivity : AppCompatActivity() {
         prescriptionDate = user.prescriptionDate
 
         id = user.id
-        if (user.pd == "0") {
+        if (user.pay == "0") {
             binding.rbCash.toggle()
 
         } else {

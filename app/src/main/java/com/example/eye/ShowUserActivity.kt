@@ -20,7 +20,7 @@ class ShowUserActivity : AppCompatActivity() {
 
         var pay : String = ""
         pay = if (user.pay == "0"){
-            "نفدی"
+            "نقدی"
         }else{
             "چکی"
         }
