@@ -21,7 +21,9 @@ interface UserDao {
     @Query("DELETE FROM ${DatabaseName.databasename}")
      fun deleteAll()
 
-    @Query("SELECT * FROM ${DatabaseName.databasename} order by id desc")
-    fun getAllUser():List<User>?
+    @Query("SELECT * FROM ${DatabaseName.databasename} order by id desc ")
+    fun getAllUser():List<User>
 
+    @Query("SELECT * FROM ${DatabaseName.databasename}")
+    fun getAllUserData():List<User>
 }

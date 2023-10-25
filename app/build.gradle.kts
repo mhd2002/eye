@@ -57,6 +57,9 @@ android {
 }
 
 dependencies {
+    implementation ("com.squareup.moshi:moshi:1.12.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
+    implementation ("com.google.code.gson:gson:2.9.0") // Use the latest version
     implementation ("com.github.aliab:Persian-Date-Picker-Dialog:1.8.0")
 
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
