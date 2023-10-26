@@ -21,7 +21,7 @@
 
 
             <TextView
-                android:id="@+id/tv_eye"
+                android:id="@+id/tv_left_eye"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="24dp"
@@ -30,14 +30,29 @@
                 android:background="@drawable/bt_background"
                 android:gravity="center"
                 android:padding="4dp"
-                android:text="نمره چشم چپ : 80 - نمره چشم راست : 80"
+                android:text="نمره چشم چپ : "
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_money" />
 
-
+            <TextView
+                android:id="@+id/tv_right_eye"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/bt_background"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="نمره چشم راست : 80"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_left_eye" />
 
             <TextView
                 android:id="@+id/tv_nameٰAndLastname"
@@ -119,7 +134,7 @@
                 android:padding="4dp"
                 android:text="تاریخ نسخه : 1402/08/20 تاریخ خرید : 1402/08/20"
                 android:textColor="@color/black"
-                android:textSize="16dp"
+                android:textSize="17dp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_doctor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_doctor"
@@ -157,7 +172,7 @@
                 android:textSize="22dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_eye" />
+                app:layout_constraintTop_toBottomOf="@id/tv_right_eye" />
 
             <TextView
                 android:id="@+id/tv_pdAndInsuranceSt"

@@ -249,7 +249,7 @@
                 android:inputType="text"
                 android:padding="4dp"
                 android:textColor="@color/black"
-                android:textDirection="rtl"
+
                 android:textSize="20dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -269,7 +269,7 @@
                 android:inputType="textMultiLine"
                 android:padding="4dp"
                 android:textColor="@color/black"
-                android:textDirection="rtl"
+
                 android:textSize="20dp"
 
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -330,7 +330,6 @@
                 android:background="@drawable/bt_background"
                 android:hint="سهم بیمه"
                 android:inputType="numberDecimal"
-                android:maxLength="3"
                 android:padding="4dp"
                 android:textColor="@color/black"
                 android:textDirection="rtl"

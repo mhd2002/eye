@@ -15,9 +15,6 @@ interface UserDao {
     @Update
     fun update(user: User)
 
-    @Delete
-    fun deleteUser(user: User)
-
     @Query("DELETE FROM ${DatabaseName.databasename}")
      fun deleteAll()
 
@@ -26,4 +23,8 @@ interface UserDao {
 
     @Query("SELECT * FROM ${DatabaseName.databasename}")
     fun getAllUserData():List<User>
+
+    @Query("DELETE FROM ${DatabaseName.databasename} WHERE id = :id")
+    fun deleteById(id: Long)
+
 }

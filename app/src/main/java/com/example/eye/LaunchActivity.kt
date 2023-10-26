@@ -55,9 +55,11 @@ class LaunchActivity : AppCompatActivity() {
     lateinit var binding: ActivityLaunchBinding
     private var mList = ArrayList<PatientData>()
     private lateinit var adapter: PatientAdapter
-    lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainActivityViewModel
     private val filteredList = ArrayList<PatientData>()
     private lateinit var inputStream: FileInputStream
+    @SuppressLint("NotifyDataSetChanged")
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLaunchBinding.inflate(layoutInflater)
@@ -67,9 +69,9 @@ class LaunchActivity : AppCompatActivity() {
         initRecyclerView()
 
         adapter.setOnClickListener(object : PatientAdapter.OnClickListener {
-            override fun onClick(position: Int, item: Boolean) {
+            override fun onClick(position: Int, item: Int) {
 
-                if (item) {
+                if (item == 1) {
 
                     if (binding.searchView.query.toString() == "") {
 
@@ -127,7 +129,7 @@ class LaunchActivity : AppCompatActivity() {
 
                     }
 
-                } else {
+                } else if (item == 0){
 
                     if (binding.searchView.query.toString() == "") {
 
@@ -185,6 +187,18 @@ class LaunchActivity : AppCompatActivity() {
 
                     }
 
+
+                }else{
+
+//                    if (binding.searchView.query.toString() == "") {
+//
+//                        viewModel.deleteById(mList[position].id)
+//
+//                    } else {
+//
+//                        viewModel.deleteById(filteredList[position].id)
+//
+//                    }
 
                 }
 
@@ -208,10 +222,10 @@ class LaunchActivity : AppCompatActivity() {
 
         })
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
         viewModel.getAllUsers()
 
-        viewModel.getAllUsersService().observe(this, Observer {
+        viewModel.getAllUsersService().observe(this) {
 
             try {
                 mList.clear()
@@ -250,7 +264,7 @@ class LaunchActivity : AppCompatActivity() {
                 Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
             }
 
-        })
+        }
 
         binding.btAdd.setOnClickListener {
 
@@ -258,16 +272,12 @@ class LaunchActivity : AppCompatActivity() {
 
         }
 
-        binding.btAdd.setOnLongClickListener(object : View.OnLongClickListener {
-            @RequiresApi(Build.VERSION_CODES.N)
-            override fun onLongClick(v: View?): Boolean {
-
-                if (v != null) {
-                    showPopup(v)
-                }
-                return true
+        binding.btAdd.setOnLongClickListener { v ->
+            if (v != null) {
+                showPopup(v)
             }
-        })
+            true
+        }
 
     }
 
@@ -338,7 +348,7 @@ class LaunchActivity : AppCompatActivity() {
         val popup = PopupMenu(this, view)
         popup.inflate(R.menu.menu)
 
-        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
 
             when (item!!.itemId) {
                 R.id.menu_deleteDatabase -> {
@@ -356,7 +366,7 @@ class LaunchActivity : AppCompatActivity() {
             }
 
             true
-        })
+        }
 
         popup.show()
     }
@@ -431,7 +441,6 @@ class LaunchActivity : AppCompatActivity() {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
 
-
         try {
             val inputStreamReader = InputStreamReader(inputStream, Charsets.UTF_8)
             val charArray = CharArray(1024)
@@ -490,32 +499,28 @@ class LaunchActivity : AppCompatActivity() {
         val dataToExport = userDatabase.getAllUserData()
 
         val json = Gson().toJson(dataToExport)
-
         val directory = Environment.DIRECTORY_DOWNLOADS
+
         val fileName = "exported_data.json"
-
         val imageFile = File(Environment.getExternalStoragePublicDirectory(directory), fileName)
-
 
         try {
 
             val outputStream = FileOutputStream(imageFile)
-
             val jsonDataBytes = json.toByteArray(Charsets.UTF_8)
-
-            val outputStreamWriter = OutputStreamWriter(outputStream, Charsets.UTF_8)
             val bufferedOutputStream = BufferedOutputStream(outputStream)
 
             bufferedOutputStream.write(jsonDataBytes)
             bufferedOutputStream.flush()
-
             bufferedOutputStream.close()
 
             MediaScannerConnection.scanFile(this, arrayOf(imageFile.path), null, null)
         } catch (e: IOException) {
-            e.printStackTrace()
+
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+
         } finally {
-            Toast.makeText(this, "file saved in /Download", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "file saved in /Download/exported_data.json", Toast.LENGTH_SHORT).show()
         }
 
     }

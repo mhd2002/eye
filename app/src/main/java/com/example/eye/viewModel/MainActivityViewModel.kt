@@ -6,14 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import com.example.eye.RoomDatabase.User
 import com.example.eye.RoomDatabase.UserDatabase
 
-class MainActivityViewModel (app : Application) : AndroidViewModel(app){
+class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
 
     private var allUser: MutableLiveData<List<User>> = MutableLiveData()
 
-     fun getAllUsers() {
+    fun getAllUsers() {
         val userDatabase = UserDatabase.getInstance(getApplication()).UserDao()
         val list = userDatabase.getAllUser()
         allUser.postValue(list)
+    }
+
+    fun deleteById(id: Long) {
+        val userDatabase = UserDatabase.getInstance(getApplication()).UserDao()
+        userDatabase.deleteById(id)
+        getAllUsers()
     }
 
     fun getAllUsersService(): MutableLiveData<List<User>> {
@@ -26,16 +32,12 @@ class MainActivityViewModel (app : Application) : AndroidViewModel(app){
         getAllUsers()
     }
 
-    fun deleteUser(entity: User) {
-        val userDatabase = UserDatabase.getInstance(getApplication()).UserDao()
-        userDatabase.deleteUser(entity)
-        getAllUsers()
-    }
-     fun deleteAllUser() {
+    fun deleteAllUser() {
         val userDatabase = UserDatabase.getInstance(getApplication()).UserDao()
         userDatabase.deleteAll()
         getAllUsers()
     }
+
     fun updateUser(entity: User) {
         val userDatabase = UserDatabase.getInstance(getApplication()).UserDao()
         userDatabase.update(entity)

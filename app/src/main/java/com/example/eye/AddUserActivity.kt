@@ -16,7 +16,7 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerListener
 
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
-    lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainActivityViewModel
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,6 @@ class AddUserActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
 
         binding.edPurchaseDate.setOnClickListener {
-            // Toast.makeText(this, "tdjhdtjh", Toast.LENGTH_SHORT).show()
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
@@ -39,9 +38,9 @@ class AddUserActivity : AppCompatActivity() {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            purchaseDate = persianPickerDate?.getPersianYear()
-                                .toString() + "/" + persianPickerDate?.getPersianMonth()
-                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            purchaseDate = persianPickerDate?.persianYear
+                                .toString() + "/" + persianPickerDate?.persianMonth
+                                .toString() + "/" + persianPickerDate?.persianDay.toString()
                             binding.edPurchaseDate.text = purchaseDate
                             binding.edPurchaseDate.hint = ""
                         }
@@ -56,7 +55,7 @@ class AddUserActivity : AppCompatActivity() {
         }
 
         binding.edPrescriptionDate.setOnClickListener {
-            // Toast.makeText(this, "tdjhdtjh", Toast.LENGTH_SHORT).show()
+
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
@@ -68,9 +67,9 @@ class AddUserActivity : AppCompatActivity() {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            prescriptionDate = persianPickerDate?.getPersianYear()
-                                .toString() + "/" + persianPickerDate?.getPersianMonth()
-                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            prescriptionDate = persianPickerDate?.persianYear
+                                .toString() + "/" + persianPickerDate?.persianMonth
+                                .toString() + "/" + persianPickerDate?.persianDay.toString()
                             binding.edPrescriptionDate.text = prescriptionDate
                             binding.edPrescriptionDate.hint = ""
                         }
