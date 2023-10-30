@@ -1,5 +1,6 @@
 package com.example.eye.RoomDatabase
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -22,5 +23,6 @@ data class User(
     val insurance: String,
     val insuranceStocks: String,
     val organization: String,
-    val ext: String
+    val ext: String,
+    val uri : String
 )

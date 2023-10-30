@@ -17,6 +17,7 @@ data class PatientData(
     val insurance: String,
     val insuranceStocks: String,
     val organization: String,
-    val ext: String
+    val ext: String,
+    val uri: String
 )
 

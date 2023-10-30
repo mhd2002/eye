@@ -1,10 +1,21 @@
 package com.example.eye
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.DatePicker
+import android.os.Environment
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.eye.RoomDatabase.User
@@ -13,18 +24,50 @@ import com.example.eye.viewModel.MainActivityViewModel
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import android.Manifest.permission.*
+import android.app.Activity
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
+
 
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
     private lateinit var viewModel: MainActivityViewModel
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
+    var pic : Boolean = false
+     lateinit var img_uri : String
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddUserAtivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
+
+        binding.btCamera.setOnClickListener {
+
+            if (!checkStoragePermissions()) {
+
+                requestForStoragePermissions()
+            }
+
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+
+                val permission = arrayOf(Manifest.permission.CAMERA)
+                requestPermissions(permission, 100)
+
+            } else {
+
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivityForResult(intent, 103)
+
+            }
+
+        }
 
         binding.edPurchaseDate.setOnClickListener {
             val calender =
@@ -133,7 +176,10 @@ class AddUserActivity : AppCompatActivity() {
             } else if (binding.edExt.text.isEmpty()) {
                 Toast.makeText(this, "لطفا توضیحات را وارد کنید.", Toast.LENGTH_SHORT).show()
 
-            } else {
+            } else if (!pic) {
+                Toast.makeText(this, "لطفا عکس را وارد کنید", Toast.LENGTH_SHORT).show()
+
+            }else {
 
                 val name = binding.edName.text.toString()
                 val lastname = binding.edLastname.text.toString()
@@ -152,14 +198,28 @@ class AddUserActivity : AppCompatActivity() {
 
                 if (binding.rbCash.isChecked) {
                     pay = "0"
-                }else if (binding.rbCheck.isChecked ){
+                } else if (binding.rbCheck.isChecked) {
                     pay = "1"
                 }
 
                 val user = User(
-                    name =  name, lastName =  lastname, mobile = phone, codeMeli =  codemeli, doctor =  doctor,
-                  prescriptionDate =   prescriptionDate,purchaseDate = purchaseDate, money =  money, pay =  pay, RightEye = righteye,
-                  LeftEye =   lefteye, pd = pd, insurance =  insurance, insuranceStocks = insuranceSt, organization =  orgi, ext = ext
+                    name = name,
+                    lastName = lastname,
+                    mobile = phone,
+                    codeMeli = codemeli,
+                    doctor = doctor,
+                    prescriptionDate = prescriptionDate,
+                    purchaseDate = purchaseDate,
+                    money = money,
+                    pay = pay,
+                    RightEye = righteye,
+                    LeftEye = lefteye,
+                    pd = pd,
+                    insurance = insurance,
+                    insuranceStocks = insuranceSt,
+                    organization = orgi,
+                    ext = ext ,
+                    uri = img_uri
                 )
 
                 viewModel.insertUser(user)
@@ -172,4 +232,75 @@ class AddUserActivity : AppCompatActivity() {
 
     }
 
+
+    private val STORAGE_PERMISSION_CODE = 23
+    private fun requestForStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                val uri = Uri.fromParts("package", this.packageName, null)
+                intent.data = uri
+                storageActivityResultLauncher.launch(intent)
+            } catch (e: Exception) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                storageActivityResultLauncher.launch(intent)
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                STORAGE_PERMISSION_CODE
+            )
+        }
+    }
+
+    private val storageActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                Log.d(
+                    ContentValues.TAG,
+                    "onActivityResult: Manage External Storage Permissions Granted"
+                )
+            } else {
+                Toast.makeText(
+                    this@AddUserActivity,
+                    "Storage Permissions Denied",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun checkStoragePermissions(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Environment.isExternalStorageManager()
+        } else {
+            val write =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val read =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED
+
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+            if (resultCode == Activity.RESULT_OK) {
+                // The child activity returned a result
+                img_uri = data?.getStringExtra("uri").toString()
+                pic=true
+                binding.btCamera.text = "عکس گرفته شد."
+            }
+
+
+    }
 }

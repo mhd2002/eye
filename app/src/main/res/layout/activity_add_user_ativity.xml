@@ -10,9 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -150,8 +152,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="24dp"
                 android:background="@drawable/bt_background"
-                android:hint="تاریخ خرید"
                 android:gravity="right|center"
+                android:hint="تاریخ خرید"
                 android:inputType="datetime"
                 android:padding="4dp"
                 android:textColor="@color/black"
@@ -229,6 +231,7 @@
                         android:gravity="center"
                         android:text="نقدی"
                         android:textSize="24dp" />
+
                 </RadioGroup>
 
 
@@ -334,6 +337,28 @@
 
                 />
 
+
+            <Button
+                android:id="@+id/bt_camera"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/bt_background"
+                android:gravity="right|center"
+                android:hint="دوربین"
+                android:inputType=""
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ed_organization"
+
+                />
+
             <EditText
                 android:id="@+id/ed_organization"
                 android:layout_width="match_parent"
@@ -354,6 +379,7 @@
 
                 />
 
+
             <EditText
                 android:id="@+id/ed_ext"
                 android:layout_width="match_parent"
@@ -373,7 +399,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
 
-                app:layout_constraintTop_toBottomOf="@id/ed_organization" />
+                app:layout_constraintTop_toBottomOf="@id/bt_camera" />
 
             <Button
                 android:id="@+id/bt_save"
@@ -390,6 +416,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ed_ext" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

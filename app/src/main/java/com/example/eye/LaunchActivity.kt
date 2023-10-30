@@ -19,7 +19,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eye.Parcelable.UserID
@@ -36,7 +35,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 import android.Manifest
 import android.Manifest.permission.*
 import android.content.ContentValues.TAG
@@ -47,7 +45,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.json.JSONObject
 
 @SuppressLint("CustomSplashScreen")
 class LaunchActivity : AppCompatActivity() {
@@ -94,7 +91,8 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insurance,
                             mList[position].insuranceStocks,
                             mList[position].organization,
-                            mList[position].ext
+                            mList[position].ext,
+                            mList[position].uri
                         )
 
                         intent.putExtra("ok", userMList)
@@ -121,7 +119,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insurance,
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
-                            filteredList[position].ext
+                            filteredList[position].ext,
+                            filteredList[position].uri
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -152,7 +151,8 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insurance,
                             mList[position].insuranceStocks,
                             mList[position].organization,
-                            mList[position].ext
+                            mList[position].ext,
+                            mList[position].uri
                         )
 
                         intent.putExtra("ok", userMList)
@@ -179,7 +179,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insurance,
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
-                            filteredList[position].ext
+                            filteredList[position].ext,
+                            filteredList[position].uri.toString()
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -251,7 +252,8 @@ class LaunchActivity : AppCompatActivity() {
                             i.insurance,
                             i.insuranceStocks,
                             i.organization,
-                            i.ext
+                            i.ext,
+                            i.uri
                         )
 
                     )

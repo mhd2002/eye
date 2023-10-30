@@ -1,6 +1,7 @@
 package com.example.eye
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.eye.Parcelable.UserID
@@ -34,6 +35,14 @@ class ShowUserActivity : AppCompatActivity() {
         binding.tvPdAndInsuranceSt.text ="سهم بیمه : " + separateNumber(user.insuranceStocks.toLong()) + "    " + "pd : " + user.pd
         binding.tvOri.text = "سازمان : " + user.organization
         binding.tvExt.text = "توضیحات : " + user.ext
+
+        binding.btCamera.setOnClickListener {
+
+            val intent = Intent(this , ShowPicActivity::class.java)
+            intent.putExtra("urii" , user.uri)
+            startActivity(intent)
+
+        }
 
     }
     private fun separateNumber(number: Long): String {
