@@ -39,13 +39,25 @@ class CameraActivity : AppCompatActivity() {
         try {
             startCamera()
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println(e.message)
         }
 
         // Capture button click
         binding.captureButton.setOnClickListener {
-            takePhoto()
+            if (binding.captureButton.text == "عکس گرفتن") {
+                binding.imageView.visibility = View.VISIBLE
+                binding.captureButton.text = "دوباره"
+                takePhoto()
+
+            } else if (binding.captureButton.text == "دوباره") {
+
+                binding.captureButton.text = "عکس گرفتن"
+                binding.imageView.visibility = View.INVISIBLE
+                takePhoto()
+            }
+
+
         }
     }
 
