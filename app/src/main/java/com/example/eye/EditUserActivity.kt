@@ -211,6 +211,7 @@ class EditUserActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun setValue() {
         val user: UserID = intent.getParcelableExtra("ok")!!
 
