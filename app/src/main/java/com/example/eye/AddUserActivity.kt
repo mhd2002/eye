@@ -26,9 +26,13 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
 import android.Manifest.permission.*
 import android.app.Activity
+import android.graphics.BitmapFactory
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
+import okio.IOException
+import java.io.File
+import java.io.FileInputStream
 
 
 class AddUserActivity : AppCompatActivity() {
@@ -37,7 +41,7 @@ class AddUserActivity : AppCompatActivity() {
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
     var pic : Boolean = false
-     lateinit var img_uri : String
+     lateinit var img_bitmap : ByteArray
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -219,7 +223,7 @@ class AddUserActivity : AppCompatActivity() {
                     insuranceStocks = insuranceSt,
                     organization = orgi,
                     ext = ext ,
-                    uri = img_uri
+                   image_data = img_bitmap
                 )
 
                 viewModel.insertUser(user)
@@ -295,10 +299,32 @@ class AddUserActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
             if (resultCode == Activity.RESULT_OK) {
+
+
                 // The child activity returned a result
-                img_uri = data?.getStringExtra("uri").toString()
-                pic=true
-                binding.btCamera.text = "عکس گرفته شد."
+                val filePath =   data!!.getStringExtra("ok")
+
+                val file = filePath?.let { File(it) }
+
+                if (file != null) {
+                    if (file.exists()) {
+                        try {
+
+                            val inputStream = FileInputStream(file)
+                            img_bitmap = inputStream.readBytes()
+
+                       //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                        //    binding.imageView2.setImageBitmap(retrievedBitmap)
+                            pic=true
+                            binding.btCamera.text = "عکس گرفته شد."
+
+                            inputStream.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
             }
 
 

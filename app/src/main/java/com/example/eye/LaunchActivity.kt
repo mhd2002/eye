@@ -37,8 +37,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 import android.Manifest
 import android.Manifest.permission.*
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.net.Uri
+import android.os.AsyncTask
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,6 +57,7 @@ class LaunchActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
     private val filteredList = ArrayList<PatientData>()
     private lateinit var inputStream: FileInputStream
+
     @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +77,16 @@ class LaunchActivity : AppCompatActivity() {
 
                         val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
 
+                        val file = File(this@LaunchActivity.cacheDir, "large_data.dat")
+
+                        try {
+                            val outputStream = FileOutputStream(file)
+                            outputStream.write(mList[position].image_data)
+                            outputStream.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
                         val userMList = UserID(
                             mList[position].id,
                             mList[position].name,
@@ -92,7 +105,7 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            mList[position].uri
+                            file.absolutePath.toString()
                         )
 
                         intent.putExtra("ok", userMList)
@@ -102,6 +115,15 @@ class LaunchActivity : AppCompatActivity() {
 
                         val intent = Intent(this@LaunchActivity, ShowUserActivity::class.java)
 
+                        val file = File(this@LaunchActivity.cacheDir, "large_data.dat")
+                        try {
+                            val outputStream = FileOutputStream(file)
+                            outputStream.write(mList[position].image_data)
+                            outputStream.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
                         val userFilteredList = UserID(
                             filteredList[position].id,
                             filteredList[position].name,
@@ -120,7 +142,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            filteredList[position].uri
+                            file.absolutePath.toString()
+
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -128,11 +151,20 @@ class LaunchActivity : AppCompatActivity() {
 
                     }
 
-                } else if (item == 0){
+                } else if (item == 0) {
 
                     if (binding.searchView.query.toString() == "") {
 
                         val intent = Intent(this@LaunchActivity, EditUserActivity::class.java)
+
+                        val file = File(this@LaunchActivity.cacheDir, "large_data.dat")
+                        try {
+                            val outputStream = FileOutputStream(file)
+                            outputStream.write(mList[position].image_data)
+                            outputStream.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
 
                         val userMList = UserID(
                             mList[position].id,
@@ -152,7 +184,7 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            mList[position].uri
+                            file.absolutePath.toString()
                         )
 
                         intent.putExtra("ok", userMList)
@@ -161,6 +193,14 @@ class LaunchActivity : AppCompatActivity() {
                     } else {
 
                         val intent = Intent(this@LaunchActivity, EditUserActivity::class.java)
+                        val file = File(this@LaunchActivity.cacheDir, "large_data.dat")
+                        try {
+                            val outputStream = FileOutputStream(file)
+                            outputStream.write(mList[position].image_data)
+                            outputStream.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
 
                         val userFilteredList = UserID(
                             filteredList[position].id,
@@ -180,7 +220,7 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            filteredList[position].uri.toString()
+                            file.absolutePath.toString()
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -189,7 +229,7 @@ class LaunchActivity : AppCompatActivity() {
                     }
 
 
-                }else{
+                } else {
 
 //                    if (binding.searchView.query.toString() == "") {
 //
@@ -253,7 +293,7 @@ class LaunchActivity : AppCompatActivity() {
                             i.insuranceStocks,
                             i.organization,
                             i.ext,
-                            i.uri
+                            i.image_data
                         )
 
                     )
@@ -283,7 +323,7 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
-    private fun checkPassWord(){
+    private fun checkPassWord() {
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val booleanValue = sharedPreferences.getBoolean("keyBoolean", false)
@@ -317,12 +357,14 @@ class LaunchActivity : AppCompatActivity() {
         }
 
     }
+
     private fun initRecyclerView() {
         binding.recyclerXml.setHasFixedSize(true)
         binding.recyclerXml.layoutManager = LinearLayoutManager(this)
         adapter = PatientAdapter(mList, this)
         binding.recyclerXml.adapter = adapter
     }
+
     private fun filterList(query: String?) {
         if (query != null) {
 
@@ -345,6 +387,7 @@ class LaunchActivity : AppCompatActivity() {
         }
 
     }
+
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showPopup(view: View) {
         val popup = PopupMenu(this, view)
@@ -359,11 +402,13 @@ class LaunchActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_export -> {
-                    exportData()
+
+                    export().execute()
+
                 }
 
                 R.id.menu_import -> {
-                    importData()
+                    import().execute()
                 }
             }
 
@@ -372,6 +417,7 @@ class LaunchActivity : AppCompatActivity() {
 
         popup.show()
     }
+
     private fun checkStoragePermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
@@ -426,7 +472,8 @@ class LaunchActivity : AppCompatActivity() {
             }
         }
     }
-    private fun importData() {
+
+    fun importData() {
 
         if (!checkStoragePermissions()) {
 
@@ -494,8 +541,9 @@ class LaunchActivity : AppCompatActivity() {
         }
 
     }
+
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun exportData() {
+    fun exportData() {
 
         val userDatabase = UserDatabase.getInstance(application).UserDao()
         val dataToExport = userDatabase.getAllUserData()
@@ -521,9 +569,8 @@ class LaunchActivity : AppCompatActivity() {
 
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
 
-        } finally {
-            Toast.makeText(this, "file saved in /Download/exported_data.json", Toast.LENGTH_SHORT).show()
         }
+
 
     }
 
@@ -531,6 +578,74 @@ class LaunchActivity : AppCompatActivity() {
 
         viewModel.getAllUsers()
         super.onStart()
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class export : AsyncTask<Void, Void, Int>() {
+        private lateinit var progressDialog: ProgressDialog
+        @Deprecated("Deprecated in Java")
+        override fun onPreExecute() {
+            progressDialog = ProgressDialog(this@LaunchActivity)
+            progressDialog.setMessage("خارج کردن اطلاعات ...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+
+            super.onPreExecute()
+        }
+
+        @Deprecated("Deprecated in Java")
+        @RequiresApi(Build.VERSION_CODES.N)
+        override fun doInBackground(vararg p0: Void?): Int? {
+
+            exportData()
+
+            return 0
+        }
+
+        @Deprecated("Deprecated in Java")
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+
+            progressDialog.dismiss()
+            Toast.makeText(
+                this@LaunchActivity,
+                "file saved in /Download/exported_data.json",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    inner class import : AsyncTask<Void, Void, Int>() {
+        lateinit var progressDialog: ProgressDialog
+        override fun onPreExecute() {
+            progressDialog = ProgressDialog(this@LaunchActivity)
+            progressDialog.setMessage("وارد کردن اطلاعات ...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+
+            super.onPreExecute()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        override fun doInBackground(vararg p0: Void?): Int? {
+
+            importData()
+
+            return 0
+        }
+
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+
+            progressDialog.dismiss()
+            Toast.makeText(
+                this@LaunchActivity,
+                "انجام شد.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
 }

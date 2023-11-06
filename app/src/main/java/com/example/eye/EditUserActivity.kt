@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,9 @@ import com.example.eye.viewModel.MainActivityViewModel
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import kotlin.properties.Delegates
 
 class EditUserActivity : AppCompatActivity() {
@@ -35,7 +39,7 @@ class EditUserActivity : AppCompatActivity() {
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
     var id by Delegates.notNull<Long>()
-    lateinit var uri: String
+    lateinit var image_data: ByteArray
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,7 +198,7 @@ class EditUserActivity : AppCompatActivity() {
                 val user = User(
                    id , name, lastname, phone, codemeli, doctor,
                     prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
-                    pd, insurance, insuranceSt, orgi, ext , uri
+                    pd, insurance, insuranceSt, orgi, ext , image_data
 
                 )
 
@@ -236,7 +240,24 @@ class EditUserActivity : AppCompatActivity() {
         } else {
             binding.rbCheck.toggle()
         }
-            uri = user.uri.toString()
+
+        val file = File(user.image_data)
+
+        if (file.exists()) {
+            try {
+
+                val inputStream = FileInputStream(file)
+                val img_bitmap = inputStream.readBytes()
+
+                image_data = img_bitmap
+
+                    inputStream.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -244,7 +265,28 @@ class EditUserActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
 
-            uri = data?.getStringExtra("uri").toString()
+            val filePath =   data!!.getStringExtra("ok")
+
+            val file = filePath?.let { File(it) }
+
+            if (file != null) {
+                if (file.exists()) {
+                    try {
+
+                        val inputStream = FileInputStream(file)
+                        image_data = inputStream.readBytes()
+
+                        //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                        //    binding.imageView2.setImageBitmap(retrievedBitmap)
+
+                        binding.btCamera.text = "عکس گرفته شد."
+
+                        inputStream.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
 
         }
 

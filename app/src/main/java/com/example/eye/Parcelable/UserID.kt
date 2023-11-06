@@ -1,6 +1,5 @@
 package com.example.eye.Parcelable
 
-import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
@@ -23,5 +22,5 @@ class UserID(
     val insuranceStocks: String,
     val organization: String,
     val ext: String,
-    val uri: String
+    val image_data: String
 ): Parcelable
