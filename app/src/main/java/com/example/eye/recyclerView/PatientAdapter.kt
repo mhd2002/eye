@@ -22,7 +22,7 @@ class PatientAdapter(var mList: List<PatientData>, val context: Context) :
         val name: TextView = itemView.findViewById(R.id.tv_name)
         val meli: TextView = itemView.findViewById(R.id.tv_code_meli)
         val edit: ImageView = itemView.findViewById(R.id.im_edit)
-
+        val history :TextView = itemView.findViewById(R.id.history)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PatientViewHolder {
@@ -50,6 +50,9 @@ class PatientAdapter(var mList: List<PatientData>, val context: Context) :
             ("نام و نام خانوادگی : " + mList[position].name + " " + mList[position].lastName)
 
         holder.meli.text = ("کدملی : " + mList[position].codeMeli)
+
+        val a = mList[position].PatientHistory
+        holder.history.text = "v$a"
 
         holder.edit.setOnClickListener {
 

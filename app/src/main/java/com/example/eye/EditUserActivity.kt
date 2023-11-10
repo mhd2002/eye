@@ -23,6 +23,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProviders
 import com.example.eye.Parcelable.UserID
 import com.example.eye.RoomDatabase.User
+import com.example.eye.RoomDatabase.UserDao
+import com.example.eye.RoomDatabase.UserDatabase
 import com.example.eye.databinding.ActivityEditUserBinding
 import com.example.eye.viewModel.MainActivityViewModel
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
@@ -40,6 +42,9 @@ class EditUserActivity : AppCompatActivity() {
     lateinit var prescriptionDate: String
     var id by Delegates.notNull<Long>()
     lateinit var image_data: ByteArray
+    lateinit var userDatabase : UserDao
+    var userHistory by Delegates.notNull<Int>()
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,7 @@ class EditUserActivity : AppCompatActivity() {
         setValue()
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
+        userDatabase  = UserDatabase.getInstance(application).UserDao()
 
         binding.btCamera.setOnClickListener {
 
@@ -195,10 +201,12 @@ class EditUserActivity : AppCompatActivity() {
                     pay = "1"
                 }
 
+
+
                 val user = User(
                    id , name, lastname, phone, codemeli, doctor,
                     prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
-                    pd, insurance, insuranceSt, orgi, ext , image_data
+                    pd, insurance, insuranceSt, orgi, ext , image_data , userHistory
 
                 )
 
@@ -241,7 +249,7 @@ class EditUserActivity : AppCompatActivity() {
         } else {
             binding.rbCheck.toggle()
         }
-
+    userHistory = user.PatientHistory
         val file = File(user.image_data)
 
         if (file.exists()) {
@@ -277,8 +285,7 @@ class EditUserActivity : AppCompatActivity() {
                         val inputStream = FileInputStream(file)
                         image_data = inputStream.readBytes()
 
-                        //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                        //    binding.imageView2.setImageBitmap(retrievedBitmap)
+                        file.delete()
 
                         binding.btCamera.text = "عکس گرفته شد."
 
@@ -350,6 +357,16 @@ class EditUserActivity : AppCompatActivity() {
             read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED
 
         }
+    }
+
+    override fun onStop() {
+
+        val file = File(this.cacheDir, "large_data.dat")
+
+        if (file.exists()) {
+            file.delete()
+        }
+        super.onStop()
     }
 
 }

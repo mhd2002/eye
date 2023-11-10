@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.eye.RoomDatabase.User
 import com.example.eye.databinding.ActivityAddUserAtivityBinding
 import com.example.eye.viewModel.MainActivityViewModel
@@ -26,23 +25,23 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
 import android.Manifest.permission.*
 import android.app.Activity
-import android.graphics.BitmapFactory
-import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
+import com.example.eye.RoomDatabase.UserDao
+import com.example.eye.RoomDatabase.UserDatabase
 import okio.IOException
 import java.io.File
 import java.io.FileInputStream
-
 
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
     private lateinit var viewModel: MainActivityViewModel
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
-    var pic : Boolean = false
-     lateinit var img_bitmap : ByteArray
-
+    var pic: Boolean = false
+    lateinit var img_bitmap: ByteArray
+    private var mList = ArrayList<User>()
+    lateinit var userDatabase : UserDao
+    var patientHistory : Int = 1
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +50,15 @@ class AddUserActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
+
+       userDatabase  = UserDatabase.getInstance(application).UserDao()
+
+        for (i in userDatabase.getAllUserData()) {
+
+            mList.add(i)
+        }
+
+
 
         binding.btCamera.setOnClickListener {
 
@@ -183,7 +191,7 @@ class AddUserActivity : AppCompatActivity() {
             } else if (!pic) {
                 Toast.makeText(this, "لطفا عکس را وارد کنید", Toast.LENGTH_SHORT).show()
 
-            }else {
+            } else {
 
                 val name = binding.edName.text.toString()
                 val lastname = binding.edLastname.text.toString()
@@ -206,6 +214,19 @@ class AddUserActivity : AppCompatActivity() {
                     pay = "1"
                 }
 
+                for (i in mList) {
+
+                    if (i.codeMeli == codemeli) {
+
+                        val user = userDatabase.getUserByCodeMeli(i.codeMeli)
+
+                        patientHistory =  user!!.PatientHistory+1
+
+                    }
+
+                }
+
+
                 val user = User(
                     name = name,
                     lastName = lastname,
@@ -222,8 +243,9 @@ class AddUserActivity : AppCompatActivity() {
                     insurance = insurance,
                     insuranceStocks = insuranceSt,
                     organization = orgi,
-                    ext = ext ,
-                   image_data = img_bitmap
+                    ext = ext,
+                    image_data = img_bitmap,
+                    PatientHistory = patientHistory
                 )
 
                 viewModel.insertUser(user)
@@ -235,7 +257,6 @@ class AddUserActivity : AppCompatActivity() {
         }
 
     }
-
 
     private val STORAGE_PERMISSION_CODE = 23
     private fun requestForStoragePermissions() {
@@ -298,35 +319,46 @@ class AddUserActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-            if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
 
 
-                // The child activity returned a result
-                val filePath =   data!!.getStringExtra("ok")
+            // The child activity returned a result
+            val filePath = data!!.getStringExtra("ok")
 
-                val file = filePath?.let { File(it) }
+            val file = filePath?.let { File(it) }
 
-                if (file != null) {
-                    if (file.exists()) {
-                        try {
+            if (file != null) {
+                if (file.exists()) {
+                    try {
 
-                            val inputStream = FileInputStream(file)
-                            img_bitmap = inputStream.readBytes()
-
-                       //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                        val inputStream = FileInputStream(file)
+                        img_bitmap = inputStream.readBytes()
+                        file.delete()
+                        //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                         //    binding.imageView2.setImageBitmap(retrievedBitmap)
-                            pic=true
-                            binding.btCamera.text = "عکس گرفته شد."
+                        pic = true
+                        binding.btCamera.text = "عکس گرفته شد."
 
-                            inputStream.close()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                        inputStream.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
                 }
-
             }
+
+        }
 
 
     }
+
+    override fun onStop() {
+
+        val file = File(this.cacheDir, "large_data.dat")
+
+        if (file.exists()) {
+            file.delete()
+        }
+        super.onStop()
+    }
+
 }

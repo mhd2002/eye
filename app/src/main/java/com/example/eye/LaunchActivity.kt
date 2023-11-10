@@ -105,7 +105,8 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            file.absolutePath.toString()
+                            file.absolutePath.toString(),
+                            mList[position].PatientHistory
                         )
 
                         intent.putExtra("ok", userMList)
@@ -142,8 +143,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            file.absolutePath.toString()
-
+                            file.absolutePath.toString(),
+                            filteredList[position].PatientHistory
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -184,7 +185,8 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            file.absolutePath.toString()
+                            file.absolutePath.toString(),
+                            mList[position].PatientHistory
                         )
 
                         intent.putExtra("ok", userMList)
@@ -220,7 +222,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            file.absolutePath.toString()
+                            file.absolutePath.toString(),
+                            filteredList[position].PatientHistory
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -293,7 +296,8 @@ class LaunchActivity : AppCompatActivity() {
                             i.insuranceStocks,
                             i.organization,
                             i.ext,
-                            i.image_data
+                            i.image_data,
+                            i.PatientHistory
                         )
 
                     )
@@ -524,9 +528,13 @@ class LaunchActivity : AppCompatActivity() {
 
                         for (n in mList) {
 
-                            if (i.codeMeli != n.codeMeli) {
-                                viewModel.insertUser(i)
-                            }
+                            viewModel.insertUser(i)
+
+//                            if (i.codeMeli == n.codeMeli && i.PatientHistory == n.PatientHistory)  {
+//                               continue
+//
+//                            }
+
 
                         }
 
@@ -536,8 +544,8 @@ class LaunchActivity : AppCompatActivity() {
 
             }
         } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+           // e.printStackTrace()
+            //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -629,7 +637,7 @@ class LaunchActivity : AppCompatActivity() {
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
-        override fun doInBackground(vararg p0: Void?): Int? {
+        override fun doInBackground(vararg p0: Void?): Int {
 
             importData()
 
@@ -639,13 +647,19 @@ class LaunchActivity : AppCompatActivity() {
         override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
 
-            progressDialog.dismiss()
-            Toast.makeText(
-                this@LaunchActivity,
-                "انجام شد.",
-                Toast.LENGTH_SHORT
-            ).show()
+                progressDialog.dismiss()
         }
+    }
+
+
+    override fun onStop() {
+
+        val file = File(this.cacheDir, "large_data.dat")
+
+        if (file.exists()) {
+            file.delete()
+        }
+        super.onStop()
     }
 
 }

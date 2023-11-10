@@ -46,8 +46,9 @@
 
             <ImageView
                 android:id="@+id/im_edit"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:padding="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/baseline_edit_24"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -55,6 +56,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
 
                 />
+
+        <TextView
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="3"
+            android:textColor="@color/black"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/im_edit"
+            app:layout_constraintStart_toEndOf="@+id/im_edit"
+            app:layout_constraintTop_toTopOf="@+id/im_edit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

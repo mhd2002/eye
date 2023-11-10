@@ -54,7 +54,8 @@ class ShowUserActivity : AppCompatActivity() {
                 val retrievedBitmap =
                     BitmapFactory.decodeByteArray(img_bitmap, 0, img_bitmap.size)
                 binding.im.setImageBitmap(retrievedBitmap)
-
+                file.delete()
+                
 
                 inputStream.close()
             } catch (e: IOException) {

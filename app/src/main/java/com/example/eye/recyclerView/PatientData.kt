@@ -18,6 +18,7 @@ data class PatientData(
     val insuranceStocks: String,
     val organization: String,
     val ext: String,
-    val image_data : ByteArray
+    val image_data : ByteArray,
+    val PatientHistory : Int
 )
 
