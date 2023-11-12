@@ -48,4 +48,16 @@
         android:contentDescription="TODO"
         android:focusable="true" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:textSize="24dp"
+        android:inputType="textMultiLine"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

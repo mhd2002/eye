@@ -56,6 +56,7 @@ class LaunchActivity : AppCompatActivity() {
     private lateinit var adapter: PatientAdapter
     private lateinit var viewModel: MainActivityViewModel
     private val filteredList = ArrayList<PatientData>()
+    private val importedData = ArrayList<User>()
     private lateinit var inputStream: FileInputStream
 
     @SuppressLint("NotifyDataSetChanged")
@@ -413,6 +414,7 @@ class LaunchActivity : AppCompatActivity() {
 
                 R.id.menu_import -> {
                     import().execute()
+                  //  importData()
                 }
             }
 
@@ -524,28 +526,35 @@ class LaunchActivity : AppCompatActivity() {
 
                 } else {
 
-                    for (i in dataFromJson) {
-
-                        for (n in mList) {
-
-                            viewModel.insertUser(i)
-
-//                            if (i.codeMeli == n.codeMeli && i.PatientHistory == n.PatientHistory)  {
-//                               continue
-//
-//                            }
-
-
-                        }
-
-                    }
-
+                    addToDatabase(dataFromJson)
                 }
 
             }
+
         } catch (e: Exception) {
-           // e.printStackTrace()
+             e.printStackTrace()
             //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun addToDatabase(importedData: List<User>?) {
+
+        for (i in mList) {
+
+            if (importedData != null) {
+                for (n in importedData) {
+
+                    if (i.codeMeli != n.codeMeli) {
+
+                        viewModel.insertUser(n)
+                    } else if (i.PatientHistory != n.PatientHistory) {
+                        viewModel.insertUser(n)
+                    }
+
+                }
+            }
+
         }
 
     }
@@ -591,6 +600,7 @@ class LaunchActivity : AppCompatActivity() {
     @SuppressLint("StaticFieldLeak")
     inner class export : AsyncTask<Void, Void, Int>() {
         private lateinit var progressDialog: ProgressDialog
+
         @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
             progressDialog = ProgressDialog(this@LaunchActivity)
@@ -644,10 +654,14 @@ class LaunchActivity : AppCompatActivity() {
             return 0
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
 
-                progressDialog.dismiss()
+
+            progressDialog.dismiss()
+            binding.textView4.text = ""
+
         }
     }
 
