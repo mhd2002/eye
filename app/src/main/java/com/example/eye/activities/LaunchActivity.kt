@@ -1,20 +1,29 @@
-package com.example.eye
+package com.example.eye.activities
 
+import android.Manifest
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
+import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -22,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eye.Parcelable.UserID
+import com.example.eye.R
 import com.example.eye.RoomDatabase.User
 import com.example.eye.RoomDatabase.UserDatabase
 import com.example.eye.databinding.ActivityLaunchBinding
@@ -29,24 +39,16 @@ import com.example.eye.recyclerView.PatientAdapter
 import com.example.eye.recyclerView.PatientData
 import com.example.eye.viewModel.MainActivityViewModel
 import com.google.gson.Gson
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import android.Manifest
-import android.Manifest.permission.*
-import android.app.ProgressDialog
-import android.content.ContentValues.TAG
-import android.net.Uri
-import android.os.AsyncTask
-import android.provider.Settings
-import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
 
 @SuppressLint("CustomSplashScreen")
 class LaunchActivity : AppCompatActivity() {
@@ -56,7 +58,6 @@ class LaunchActivity : AppCompatActivity() {
     private lateinit var adapter: PatientAdapter
     private lateinit var viewModel: MainActivityViewModel
     private val filteredList = ArrayList<PatientData>()
-    private val importedData = ArrayList<User>()
     private lateinit var inputStream: FileInputStream
 
     @SuppressLint("NotifyDataSetChanged")
@@ -402,20 +403,23 @@ class LaunchActivity : AppCompatActivity() {
 
             when (item!!.itemId) {
                 R.id.menu_deleteDatabase -> {
-                    viewModel.deleteAllUser()
+                    delete().execute()
 
                 }
 
                 R.id.menu_export -> {
 
-                    export().execute()
+                    enterFileNameToImportOrExport(false)
 
                 }
 
                 R.id.menu_import -> {
-                    import().execute()
-                  //  importData()
+
+                    enterFileNameToImportOrExport(true)
+
                 }
+
+
             }
 
             true
@@ -479,7 +483,7 @@ class LaunchActivity : AppCompatActivity() {
         }
     }
 
-    fun importData() {
+    fun importData(fileName: String) {
 
         if (!checkStoragePermissions()) {
 
@@ -489,7 +493,8 @@ class LaunchActivity : AppCompatActivity() {
         try {
             val downloadFolderPath =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val filePath = File(downloadFolderPath, "exported_data.json")
+
+            val filePath = File(downloadFolderPath, "$fileName.json")
             inputStream = FileInputStream(filePath)
 
         } catch (e: Exception) {
@@ -532,7 +537,7 @@ class LaunchActivity : AppCompatActivity() {
             }
 
         } catch (e: Exception) {
-             e.printStackTrace()
+            e.printStackTrace()
             //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
         }
 
@@ -548,7 +553,7 @@ class LaunchActivity : AppCompatActivity() {
                     if (i.codeMeli != n.codeMeli) {
 
                         viewModel.insertUser(n)
-                    } else if (i.PatientHistory != n.PatientHistory) {
+                    } else if (i.purchaseDate != n.purchaseDate) {
                         viewModel.insertUser(n)
                     }
 
@@ -560,7 +565,7 @@ class LaunchActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun exportData() {
+    fun exportData(userInput: String) {
 
         val userDatabase = UserDatabase.getInstance(application).UserDao()
         val dataToExport = userDatabase.getAllUserData()
@@ -568,8 +573,10 @@ class LaunchActivity : AppCompatActivity() {
         val json = Gson().toJson(dataToExport)
         val directory = Environment.DIRECTORY_DOWNLOADS
 
-        val fileName = "exported_data.json"
-        val imageFile = File(Environment.getExternalStoragePublicDirectory(directory), fileName)
+        val imageFile = File(
+            Environment.getExternalStoragePublicDirectory(directory),
+            "$userInput.json"
+        )
 
         try {
 
@@ -598,7 +605,7 @@ class LaunchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    inner class export : AsyncTask<Void, Void, Int>() {
+    inner class export(val userInput: String) : AsyncTask<Void, Void, Int>() {
         private lateinit var progressDialog: ProgressDialog
 
         @Deprecated("Deprecated in Java")
@@ -616,7 +623,7 @@ class LaunchActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.N)
         override fun doInBackground(vararg p0: Void?): Int? {
 
-            exportData()
+            exportData(userInput)
 
             return 0
         }
@@ -628,13 +635,13 @@ class LaunchActivity : AppCompatActivity() {
             progressDialog.dismiss()
             Toast.makeText(
                 this@LaunchActivity,
-                "file saved in /Download/exported_data.json",
+                "file saved in /Download/$userInput.json",
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
 
-    inner class import : AsyncTask<Void, Void, Int>() {
+    inner class import(val fileName: String) : AsyncTask<Void, Void, Int>() {
         lateinit var progressDialog: ProgressDialog
         override fun onPreExecute() {
             progressDialog = ProgressDialog(this@LaunchActivity)
@@ -648,8 +655,7 @@ class LaunchActivity : AppCompatActivity() {
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun doInBackground(vararg p0: Void?): Int {
-
-            importData()
+            importData(fileName)
 
             return 0
         }
@@ -660,11 +666,38 @@ class LaunchActivity : AppCompatActivity() {
 
 
             progressDialog.dismiss()
-            binding.textView4.text = ""
 
         }
     }
 
+    inner class delete : AsyncTask<Void, Void, Int>() {
+        lateinit var progressDialog: ProgressDialog
+        override fun onPreExecute() {
+            progressDialog = ProgressDialog(this@LaunchActivity)
+            progressDialog.setMessage("حذف کردن اطلاعات ...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+
+            super.onPreExecute()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        override fun doInBackground(vararg p0: Void?): Int {
+
+            viewModel.deleteAllUser()
+
+            return 0
+        }
+
+        @SuppressLint("SetTextI18n")
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+
+            progressDialog.dismiss()
+
+        }
+    }
 
     override fun onStop() {
 
@@ -676,4 +709,39 @@ class LaunchActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    private fun enterFileNameToImportOrExport(isImport: Boolean) {
+
+
+        val inputEditText = EditText(this)
+        val builder = AlertDialog.Builder(this)
+
+        if (isImport) {
+            builder.setTitle("نام فایل برای وارد کردن اطلاعات وارد کنید.")
+        } else {
+            builder.setTitle("نام فایل برای خروج کردن اطلاعات وارد کنید.")
+        }
+
+        builder.setView(inputEditText)
+
+        builder.setPositiveButton("OK") { _, _ ->
+
+            val userInput = inputEditText.text.toString()
+
+            if (isImport) {
+                import(userInput).execute()
+            } else {
+                export(userInput).execute()
+            }
+
+
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+
+
+    }
+
 }
+
+

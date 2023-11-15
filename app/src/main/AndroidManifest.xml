@@ -30,19 +30,19 @@
             android:name=".ShowPicActivity"
             android:exported="false" />
         <activity
-            android:name=".CameraActivity"
+            android:name=".camera.CameraActivity"
             android:exported="false" />
         <activity
-            android:name=".EditUserActivity"
+            android:name=".activities.EditUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ShowUserActivity"
+            android:name=".activities.ShowUserActivity"
             android:exported="false" />
         <activity
-            android:name=".AddUserActivity"
+            android:name=".activities.AddUserActivity"
             android:exported="false" />
         <activity
-            android:name=".LaunchActivity"
+            android:name=".activities.LaunchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

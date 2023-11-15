@@ -1,7 +1,6 @@
-package com.example.eye
+package com.example.eye.activities
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,7 +28,7 @@ class ShowUserActivity : AppCompatActivity() {
         }
 
         binding.tvNameAndLastname.text = "نام و نام خانوادگی : " + user.name + " " + user.lastName
-        binding.tvCodemeli.text = "کد ملی : " + user.codeMeli
+        binding.tvCodemeli.text = "کد ملی : " + user.codeMeli + "  (v" + user.PatientHistory + ")"
         binding.tvPhone.text = "شماره تماس : " + user.mobile
         binding.tvDoctor.text = "دکتر : " + user.doctor
         binding.tvDate.text =

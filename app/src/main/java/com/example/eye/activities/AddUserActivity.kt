@@ -1,12 +1,10 @@
-package com.example.eye
+package com.example.eye.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -16,45 +14,52 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProviders
-import com.example.eye.Parcelable.UserID
 import com.example.eye.RoomDatabase.User
-import com.example.eye.RoomDatabase.UserDao
-import com.example.eye.RoomDatabase.UserDatabase
-import com.example.eye.databinding.ActivityEditUserBinding
+import com.example.eye.databinding.ActivityAddUserAtivityBinding
 import com.example.eye.viewModel.MainActivityViewModel
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import android.Manifest.permission.*
+import android.app.Activity
+import androidx.annotation.RequiresApi
+import com.example.eye.RoomDatabase.UserDao
+import com.example.eye.RoomDatabase.UserDatabase
+import com.example.eye.camera.CameraActivity
+import okio.IOException
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
-import kotlin.properties.Delegates
 
-class EditUserActivity : AppCompatActivity() {
-    lateinit var binding: ActivityEditUserBinding
-    lateinit var viewModel: MainActivityViewModel
+class AddUserActivity : AppCompatActivity() {
+    lateinit var binding: ActivityAddUserAtivityBinding
+    private lateinit var viewModel: MainActivityViewModel
     lateinit var purchaseDate: String
     lateinit var prescriptionDate: String
-    var id by Delegates.notNull<Long>()
-    lateinit var image_data: ByteArray
+    var pic: Boolean = false
+    lateinit var img_bitmap: ByteArray
+    private var mList = ArrayList<User>()
     lateinit var userDatabase : UserDao
-    var userHistory by Delegates.notNull<Int>()
+    var patientHistory : Int = 1
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEditUserBinding.inflate(layoutInflater)
+        binding = ActivityAddUserAtivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setValue()
-
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
-        userDatabase  = UserDatabase.getInstance(application).UserDao()
+
+       userDatabase  = UserDatabase.getInstance(application).UserDao()
+
+        for (i in userDatabase.getAllUserData()) {
+
+            mList.add(i)
+        }
+
+
 
         binding.btCamera.setOnClickListener {
 
@@ -78,7 +83,6 @@ class EditUserActivity : AppCompatActivity() {
         }
 
         binding.edPurchaseDate.setOnClickListener {
-            // Toast.makeText(this, "tdjhdtjh", Toast.LENGTH_SHORT).show()
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
@@ -90,9 +94,9 @@ class EditUserActivity : AppCompatActivity() {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            purchaseDate = persianPickerDate?.getPersianYear()
-                                .toString() + "/" + persianPickerDate?.getPersianMonth()
-                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            purchaseDate = persianPickerDate?.persianYear
+                                .toString() + "/" + persianPickerDate?.persianMonth
+                                .toString() + "/" + persianPickerDate?.persianDay.toString()
                             binding.edPurchaseDate.text = purchaseDate
                             binding.edPurchaseDate.hint = ""
                         }
@@ -107,6 +111,7 @@ class EditUserActivity : AppCompatActivity() {
         }
 
         binding.edPrescriptionDate.setOnClickListener {
+
             val calender =
                 PersianDatePickerDialog(this).setPositiveButtonString("تایید").setNegativeButton("")
                     .setTodayButtonVisible(true).setMinYear(1300).setInitDate(
@@ -118,9 +123,9 @@ class EditUserActivity : AppCompatActivity() {
                         @SuppressLint("SetTextI18n")
                         override fun onDateSelected(persianPickerDate: PersianPickerDate?) {
 
-                            prescriptionDate = persianPickerDate?.getPersianYear()
-                                .toString() + "/" + persianPickerDate?.getPersianMonth()
-                                .toString() + "/" + persianPickerDate?.getPersianDay().toString()
+                            prescriptionDate = persianPickerDate?.persianYear
+                                .toString() + "/" + persianPickerDate?.persianMonth
+                                .toString() + "/" + persianPickerDate?.persianDay.toString()
                             binding.edPrescriptionDate.text = prescriptionDate
                             binding.edPrescriptionDate.hint = ""
                         }
@@ -134,7 +139,7 @@ class EditUserActivity : AppCompatActivity() {
             calender.show()
         }
 
-        binding.btUpdate.setOnClickListener {
+        binding.btSave.setOnClickListener {
 
             if (binding.edName.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نام را وارد کنید.", Toast.LENGTH_SHORT).show()
@@ -150,6 +155,12 @@ class EditUserActivity : AppCompatActivity() {
 
             } else if (binding.edDoctor.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نام دکتر را وارد کنید.", Toast.LENGTH_SHORT).show()
+
+            } else if (binding.edPrescriptionDate.hint == "تاریخ نسخه") {
+                Toast.makeText(this, "لطفا تاریخ نسخه را وارد کنید.", Toast.LENGTH_SHORT).show()
+
+            } else if (binding.edPurchaseDate.hint == "تاریخ خرید") {
+                Toast.makeText(this, "لطفا تاریخ خرید را وارد کنید.", Toast.LENGTH_SHORT).show()
 
             } else if (binding.edMoney.text.isEmpty()) {
                 Toast.makeText(this, "لطفا مبلغ را وارد کنید.", Toast.LENGTH_SHORT).show()
@@ -178,6 +189,9 @@ class EditUserActivity : AppCompatActivity() {
             } else if (binding.edExt.text.isEmpty()) {
                 Toast.makeText(this, "لطفا توضیحات را وارد کنید.", Toast.LENGTH_SHORT).show()
 
+            } else if (!pic) {
+                Toast.makeText(this, "لطفا عکس را وارد کنید", Toast.LENGTH_SHORT).show()
+
             } else {
 
                 val name = binding.edName.text.toString()
@@ -193,7 +207,7 @@ class EditUserActivity : AppCompatActivity() {
                 val insuranceSt = binding.edInsuranceStocks.text.toString()
                 val orgi = binding.edOrganization.text.toString()
                 val ext = binding.edExt.text.toString()
-                var pay = ""
+                var pay: String = ""
 
                 if (binding.rbCash.isChecked) {
                     pay = "0"
@@ -201,103 +215,47 @@ class EditUserActivity : AppCompatActivity() {
                     pay = "1"
                 }
 
+                for (i in mList) {
+
+                    if (i.codeMeli == codemeli) {
+
+                        val user = userDatabase.getUserByCodeMeli(i.codeMeli)
+
+                        patientHistory =  user!!.PatientHistory+1
+
+                    }
+
+                }
 
 
                 val user = User(
-                   id , name, lastname, phone, codemeli, doctor,
-                    prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
-                    pd, insurance, insuranceSt, orgi, ext , image_data , userHistory
-
+                    name = name,
+                    lastName = lastname,
+                    mobile = phone,
+                    codeMeli = codemeli,
+                    doctor = doctor,
+                    prescriptionDate = prescriptionDate,
+                    purchaseDate = purchaseDate,
+                    money = money,
+                    pay = pay,
+                    RightEye = righteye,
+                    LeftEye = lefteye,
+                    pd = pd,
+                    insurance = insurance,
+                    insuranceStocks = insuranceSt,
+                    organization = orgi,
+                    ext = ext,
+                    image_data = img_bitmap,
+                    PatientHistory = patientHistory
                 )
 
-                viewModel.updateUser(user)
+                viewModel.insertUser(user)
                 finish()
 
             }
 
-        }
-
-    }
-
-    @SuppressLint("SuspiciousIndentation")
-    fun setValue() {
-        val user: UserID = intent.getParcelableExtra("ok")!!
-
-        binding.edName.setText(user.name)
-        binding.edLastname.setText(user.lastName)
-        binding.edCodemeli.setText(user.codeMeli)
-        binding.edPhoneNumber.setText(user.mobile)
-        binding.edDoctor.setText(user.doctor)
-        binding.edPrescriptionDate.text = user.prescriptionDate
-        binding.edPurchaseDate.text = user.purchaseDate
-        binding.edMoney.setText(user.money)
-        binding.edRightEye.setText(user.RightEye)
-        binding.edLeftEye.setText(user.LeftEye)
-        binding.edPd.setText(user.pd)
-        binding.edInsurance.setText(user.insurance)
-        binding.edInsuranceStocks.setText(user.insuranceStocks)
-        binding.edOrganization.setText(user.organization)
-        binding.edExt.setText(user.ext)
-
-        purchaseDate = user.purchaseDate
-        prescriptionDate = user.prescriptionDate
-
-        id = user.id
-        if (user.pay == "0") {
-            binding.rbCash.toggle()
-
-        } else {
-            binding.rbCheck.toggle()
-        }
-    userHistory = user.PatientHistory
-        val file = File(user.image_data)
-
-        if (file.exists()) {
-            try {
-
-                val inputStream = FileInputStream(file)
-                val img_bitmap = inputStream.readBytes()
-
-                image_data = img_bitmap
-
-                    inputStream.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-
-            val filePath =   data!!.getStringExtra("ok")
-
-            val file = filePath?.let { File(it) }
-
-            if (file != null) {
-                if (file.exists()) {
-                    try {
-
-                        val inputStream = FileInputStream(file)
-                        image_data = inputStream.readBytes()
-
-                        file.delete()
-
-                        binding.btCamera.text = "عکس گرفته شد."
-
-                        inputStream.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
 
         }
-
 
     }
 
@@ -338,7 +296,7 @@ class EditUserActivity : AppCompatActivity() {
                 )
             } else {
                 Toast.makeText(
-                    this@EditUserActivity,
+                    this@AddUserActivity,
                     "Storage Permissions Denied",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -357,6 +315,41 @@ class EditUserActivity : AppCompatActivity() {
             read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED
 
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+
+
+            // The child activity returned a result
+            val filePath = data!!.getStringExtra("ok")
+
+            val file = filePath?.let { File(it) }
+
+            if (file != null) {
+                if (file.exists()) {
+                    try {
+
+                        val inputStream = FileInputStream(file)
+                        img_bitmap = inputStream.readBytes()
+                        file.delete()
+                        //     val retrievedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                        //    binding.imageView2.setImageBitmap(retrievedBitmap)
+                        pic = true
+                        binding.btCamera.text = "عکس گرفته شد."
+
+                        inputStream.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+
+        }
+
+
     }
 
     override fun onStop() {

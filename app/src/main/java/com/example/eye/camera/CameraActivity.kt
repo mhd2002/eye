@@ -1,4 +1,4 @@
-package com.example.eye
+package com.example.eye.camera
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -18,6 +17,8 @@ import com.example.eye.databinding.ActivityCameraBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import androidx.camera.view.PreviewView
+import com.example.eye.activities.AddUserActivity
+import com.example.eye.R
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
