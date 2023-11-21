@@ -44,15 +44,12 @@ class PatientAdapter(var mList: List<PatientData>, val context: Context) :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: PatientViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PatientViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         holder.name.text =
             ("نام و نام خانوادگی : " + mList[position].name + " " + mList[position].lastName)
 
         holder.meli.text = ("کدملی : " + mList[position].codeMeli)
-
-        val a = mList[position].PatientHistory
-        holder.history.text = "v$a"
 
         holder.edit.setOnClickListener {
 

@@ -41,8 +41,7 @@ class EditUserActivity : AppCompatActivity() {
     lateinit var prescriptionDate: String
     var id by Delegates.notNull<Long>()
     lateinit var image_data: ByteArray
-    lateinit var userDatabase : UserDao
-    var userHistory by Delegates.notNull<Int>()
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +52,6 @@ class EditUserActivity : AppCompatActivity() {
         setValue()
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
-        userDatabase  = UserDatabase.getInstance(application).UserDao()
 
         binding.btCamera.setOnClickListener {
 
@@ -156,10 +154,10 @@ class EditUserActivity : AppCompatActivity() {
             } else if (!binding.rbCash.isChecked && !binding.rbCheck.isChecked) {
                 Toast.makeText(this, "لطفا نوع پرداخت را وارد کنید.", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edRightEye.text.isEmpty()) {
+            } else if (binding.edRightEyeAx.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نمره چشم راست را وارد کنید.", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edLeftEye.text.isEmpty()) {
+            } else if (binding.edLeftEyeAx.text.isEmpty()) {
                 Toast.makeText(this, "لطفا نمره چشم چپ را وارد کنید.", Toast.LENGTH_SHORT).show()
 
             } else if (binding.edPd.text.isEmpty()) {
@@ -185,8 +183,8 @@ class EditUserActivity : AppCompatActivity() {
                 val codemeli = binding.edCodemeli.text.toString()
                 val doctor = binding.edDoctor.text.toString()
                 val money = binding.edMoney.text.toString()
-                val lefteye = binding.edLeftEye.text.toString()
-                val righteye = binding.edRightEye.text.toString()
+                val lefteye = binding.edLeftEyeAx.text.toString()
+                val righteye = binding.edRightEyeAx.text.toString()
                 val pd = binding.edPd.text.toString()
                 val insurance = binding.edInsurance.text.toString()
                 val insuranceSt = binding.edInsuranceStocks.text.toString()
@@ -201,11 +199,10 @@ class EditUserActivity : AppCompatActivity() {
                 }
 
 
-
                 val user = User(
                    id , name, lastname, phone, codemeli, doctor,
                     prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
-                    pd, insurance, insuranceSt, orgi, ext , image_data , userHistory
+                    pd, insurance, insuranceSt, orgi, ext , image_data
 
                 )
 
@@ -230,8 +227,8 @@ class EditUserActivity : AppCompatActivity() {
         binding.edPrescriptionDate.text = user.prescriptionDate
         binding.edPurchaseDate.text = user.purchaseDate
         binding.edMoney.setText(user.money)
-        binding.edRightEye.setText(user.RightEye)
-        binding.edLeftEye.setText(user.LeftEye)
+        binding.edRightEyeAx.setText(user.RightEye)
+        binding.edLeftEyeAx.setText(user.LeftEye)
         binding.edPd.setText(user.pd)
         binding.edInsurance.setText(user.insurance)
         binding.edInsuranceStocks.setText(user.insuranceStocks)
@@ -248,7 +245,7 @@ class EditUserActivity : AppCompatActivity() {
         } else {
             binding.rbCheck.toggle()
         }
-    userHistory = user.PatientHistory
+
         val file = File(user.image_data)
 
         if (file.exists()) {

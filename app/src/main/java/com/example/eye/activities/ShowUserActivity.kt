@@ -28,14 +28,14 @@ class ShowUserActivity : AppCompatActivity() {
         }
 
         binding.tvNameAndLastname.text = "نام و نام خانوادگی : " + user.name + " " + user.lastName
-        binding.tvCodemeli.text = "کد ملی : " + user.codeMeli + "  (v" + user.PatientHistory + ")"
+        binding.tvCodemeli.text = "کد ملی : " + user.codeMeli
         binding.tvPhone.text = "شماره تماس : " + user.mobile
         binding.tvDoctor.text = "دکتر : " + user.doctor
         binding.tvDate.text =
             "تاریخ نسخه : " + user.prescriptionDate + "  " + "تاریخ خرید : " + user.purchaseDate
         binding.tvMoney.text = "مبلغ : " + separateNumber(user.money.toLong()) + " ( " + pay + " ) "
-        binding.tvRightEye.text = "نمره چشم راست : " + user.RightEye
-        binding.tvLeftEye.text = "نمره چشم چپ : " + user.LeftEye
+        binding.tvLeftEye.text = "OD : " + rearrangeNumbers(user.RightEye)
+        binding.tvRightEye.text = "OS : " + rearrangeNumbers(user.LeftEye)
         binding.tvInsurance.text = "بیمه : " + user.insurance
         binding.tvPdAndInsuranceSt.text =
             "سهم بیمه : " + separateNumber(user.insuranceStocks.toLong()) + "    " + "pd : " + user.pd
@@ -68,7 +68,16 @@ class ShowUserActivity : AppCompatActivity() {
     private fun separateNumber(number: Long): String {
         return String.format("%,d", number)
     }
+    fun rearrangeNumbers(input: String): String {
+        // Step 1: Split the string into individual numbers
+        val numbers = input.split(" ")
 
+        // Step 2: Rearrange the numbers in the desired order
+        val rearrangedNumbers = numbers.reversed()
+
+        // Step 3: Join the numbers into a string and update the TextView
+        return rearrangedNumbers.joinToString(" ")
+    }
     override fun onDestroy() {
         finish()
         super.onDestroy()

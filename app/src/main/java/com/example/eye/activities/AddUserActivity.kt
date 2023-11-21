@@ -25,13 +25,18 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
 import android.Manifest.permission.*
 import android.app.Activity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.PopupMenu
 import com.example.eye.RoomDatabase.UserDao
 import com.example.eye.RoomDatabase.UserDatabase
 import com.example.eye.camera.CameraActivity
 import okio.IOException
 import java.io.File
 import java.io.FileInputStream
+import kotlin.math.roundToInt
 
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
@@ -40,9 +45,10 @@ class AddUserActivity : AppCompatActivity() {
     lateinit var prescriptionDate: String
     var pic: Boolean = false
     lateinit var img_bitmap: ByteArray
-    private var mList = ArrayList<User>()
-    lateinit var userDatabase : UserDao
-    var patientHistory : Int = 1
+    var rightEyeSph: String = ""
+    var rightEyeSyl: String = ""
+    var leftEyeSph: String = ""
+    var leftEyeSyl: String = ""
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,14 +58,26 @@ class AddUserActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
 
-       userDatabase  = UserDatabase.getInstance(application).UserDao()
+        binding.edRightEyeSph.setOnClickListener {
+            showPopupMenu(it, "edRightEyeSph")
 
-        for (i in userDatabase.getAllUserData()) {
-
-            mList.add(i)
         }
 
+        binding.edRightEyeSyl.setOnClickListener {
 
+            showPopupMenu(it, "edRightEyeSyl")
+        }
+
+        binding.edLeftEyeSph.setOnClickListener {
+            showPopupMenu(it, "edLeftEyeSph")
+
+        }
+
+        binding.edLeftEyeSyl.setOnClickListener {
+            showPopupMenu(it, "edLeftEyeSyl")
+
+
+        }
 
         binding.btCamera.setOnClickListener {
 
@@ -167,13 +185,28 @@ class AddUserActivity : AppCompatActivity() {
 
             } else if (!binding.rbCash.isChecked && !binding.rbCheck.isChecked) {
                 Toast.makeText(this, "لطفا نوع پرداخت را وارد کنید.", Toast.LENGTH_SHORT).show()
+///////////////////////////////////
+            } else if (binding.edRightEyeAx.text.isEmpty()) {
+                Toast.makeText(this, "لطفا نمره چشم راست AX را وارد کنید.", Toast.LENGTH_SHORT)
+                    .show()
 
-            } else if (binding.edRightEye.text.isEmpty()) {
-                Toast.makeText(this, "لطفا نمره چشم راست را وارد کنید.", Toast.LENGTH_SHORT).show()
+            } else if (binding.edRightEyeSyl.hint == "SYL") {
+                Toast.makeText(this, "لطفا نمره چشم راست SYL وارد کنید.", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edLeftEye.text.isEmpty()) {
-                Toast.makeText(this, "لطفا نمره چشم چپ را وارد کنید.", Toast.LENGTH_SHORT).show()
+            } else if (binding.edRightEyeSph.hint == "SPH") {
+                Toast.makeText(this, "لطفا نمره چشم راست SPH وارد کنید.", Toast.LENGTH_SHORT).show()
+////////////////////////////
+            } else if (binding.edLeftEyeAx.text.isEmpty()) {
+                Toast.makeText(this, "لطفا نمره چشم چپ AX را وارد کنید.", Toast.LENGTH_SHORT).show()
 
+            } else if (binding.edLeftEyeSyl.hint == "SYL") {
+                Toast.makeText(this, "لطفا نمره چشم چپ SYL را وارد کنید.", Toast.LENGTH_SHORT)
+                    .show()
+
+            } else if (binding.edLeftEyeSph.hint == "SPH") {
+                Toast.makeText(this, "لطفا نمره چشم چپ SPH را وارد کنید.", Toast.LENGTH_SHORT)
+                    .show()
+///////////////////////////
             } else if (binding.edPd.text.isEmpty()) {
                 Toast.makeText(this, "لطفا pd را وارد کنید.", Toast.LENGTH_SHORT).show()
 
@@ -200,14 +233,13 @@ class AddUserActivity : AppCompatActivity() {
                 val codemeli = binding.edCodemeli.text.toString()
                 val doctor = binding.edDoctor.text.toString()
                 val money = binding.edMoney.text.toString()
-                val lefteye = binding.edLeftEye.text.toString()
-                val righteye = binding.edRightEye.text.toString()
+
                 val pd = binding.edPd.text.toString()
                 val insurance = binding.edInsurance.text.toString()
                 val insuranceSt = binding.edInsuranceStocks.text.toString()
                 val orgi = binding.edOrganization.text.toString()
                 val ext = binding.edExt.text.toString()
-                var pay: String = ""
+                var pay = ""
 
                 if (binding.rbCash.isChecked) {
                     pay = "0"
@@ -215,18 +247,14 @@ class AddUserActivity : AppCompatActivity() {
                     pay = "1"
                 }
 
-                for (i in mList) {
 
-                    if (i.codeMeli == codemeli) {
+                val lefteye =
+                    binding.edLeftEyeSph.text.toString() + "   " + binding.edLeftEyeSyl.text.toString() +
+                            "   " + binding.edLeftEyeAx.text.toString()
 
-                        val user = userDatabase.getUserByCodeMeli(i.codeMeli)
-
-                        patientHistory =  user!!.PatientHistory+1
-
-                    }
-
-                }
-
+                val righteye =
+                    binding.edRightEyeSph.text.toString() + "   " + binding.edRightEyeSyl.text.toString() +
+                            "   " + binding.edRightEyeAx.text.toString()
 
                 val user = User(
                     name = name,
@@ -246,7 +274,7 @@ class AddUserActivity : AppCompatActivity() {
                     organization = orgi,
                     ext = ext,
                     image_data = img_bitmap,
-                    PatientHistory = patientHistory
+
                 )
 
                 viewModel.insertUser(user)
@@ -254,9 +282,86 @@ class AddUserActivity : AppCompatActivity() {
 
             }
 
-
         }
 
+    }
+
+
+    private fun showPopupMenu(view: View, s: String) {
+        val popup = PopupMenu(this, view)
+
+        val start = -16.0
+        val end = 16.0
+        val step = 0.25
+
+        if (step <= 0) {
+            throw IllegalArgumentException("Step must be a positive value")
+        }
+
+        var currentValue = start
+        var menuIndex = 0
+
+        while (currentValue <= end) {
+            popup.menu.add(
+                Menu.NONE,
+                Menu.FIRST + menuIndex,
+                Menu.NONE,
+                currentValue.toString()
+            )
+
+            currentValue += step
+            menuIndex++
+        }
+
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
+            currentValue = start
+
+
+            menuIndex = 0
+            while (currentValue <= end) {
+
+                if (item!!.itemId == Menu.FIRST + menuIndex) {
+
+                    when (s) {
+
+                        "edRightEyeSph" -> {
+                            rightEyeSph = currentValue.toString()
+                            binding.edRightEyeSph.text = currentValue.toString()
+                            binding.edRightEyeSph.hint = "done"
+                        }
+
+                        "edRightEyeSyl" -> {
+                            rightEyeSyl = currentValue.toString()
+                            binding.edRightEyeSyl.text = currentValue.toString()
+                            binding.edRightEyeSyl.hint = "done"
+
+                        }
+
+                        "edLeftEyeSph" -> {
+                            leftEyeSph = currentValue.toString()
+                            binding.edLeftEyeSph.text = currentValue.toString()
+                            binding.edLeftEyeSph.hint = "done"
+                        }
+
+                        "edLeftEyeSyl" -> {
+                            leftEyeSyl = currentValue.toString()
+                            binding.edLeftEyeSyl.text = currentValue.toString()
+                            binding.edLeftEyeSyl.hint = "done"
+                        }
+
+                    }
+
+                    break
+                }
+
+                currentValue += step
+                menuIndex++
+            }
+
+            true
+        }
+
+        popup.show()
     }
 
     private val STORAGE_PERMISSION_CODE = 23

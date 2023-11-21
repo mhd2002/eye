@@ -25,7 +25,7 @@ data class User(
     val organization: String,
     val ext: String,
     val image_data : ByteArray ,
-    val PatientHistory : Int
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

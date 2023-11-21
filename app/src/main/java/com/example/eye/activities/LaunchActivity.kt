@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -48,6 +49,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 
 @SuppressLint("CustomSplashScreen")
@@ -107,8 +110,8 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            file.absolutePath.toString(),
-                            mList[position].PatientHistory
+                            file.absolutePath.toString()
+
                         )
 
                         intent.putExtra("ok", userMList)
@@ -145,8 +148,7 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            file.absolutePath.toString(),
-                            filteredList[position].PatientHistory
+                            file.absolutePath.toString()
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -187,8 +189,7 @@ class LaunchActivity : AppCompatActivity() {
                             mList[position].insuranceStocks,
                             mList[position].organization,
                             mList[position].ext,
-                            file.absolutePath.toString(),
-                            mList[position].PatientHistory
+                            file.absolutePath.toString()
                         )
 
                         intent.putExtra("ok", userMList)
@@ -224,8 +225,8 @@ class LaunchActivity : AppCompatActivity() {
                             filteredList[position].insuranceStocks,
                             filteredList[position].organization,
                             filteredList[position].ext,
-                            file.absolutePath.toString(),
-                            filteredList[position].PatientHistory
+                            file.absolutePath.toString()
+
                         )
 
                         intent.putExtra("ok", userFilteredList)
@@ -299,7 +300,7 @@ class LaunchActivity : AppCompatActivity() {
                             i.organization,
                             i.ext,
                             i.image_data,
-                            i.PatientHistory
+
                         )
 
                     )
@@ -322,7 +323,8 @@ class LaunchActivity : AppCompatActivity() {
 
         binding.btAdd.setOnLongClickListener { v ->
             if (v != null) {
-                showPopup(v)
+                  showPopup(v)
+
             }
             true
         }
@@ -363,6 +365,62 @@ class LaunchActivity : AppCompatActivity() {
         }
 
     }
+
+  /*  private fun showPopupMenu(view: View, s: String) {*
+        val popup = PopupMenu(this, view)
+
+        val start = -16.0
+        val end = 16.0
+        val step = 0.25
+
+        var currentValue = start
+
+        while (currentValue <= end) {
+
+            popup.menu.add(
+                Menu.NONE,
+                Menu.FIRST + currentValue.toInt(),
+                Menu.NONE,
+                currentValue.toString()
+            )
+
+            currentValue += step
+        }
+
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
+
+            currentValue = start
+            binding.textView.text = ""
+
+            while (currentValue <= end) {
+
+                binding.textView.append(currentValue.toString())
+                when (item!!.itemId) {
+
+                    Menu.FIRST + currentValue.toInt() -> {
+
+                        Toast.makeText(this, "$currentValue", Toast.LENGTH_SHORT).show()
+
+
+                        break
+                    }
+
+                }
+                currentValue += step
+
+            }
+
+            true
+        }
+
+        popup.show()
+
+    }
+
+
+*/
+
+
 
     private fun initRecyclerView() {
         binding.recyclerXml.setHasFixedSize(true)
@@ -427,6 +485,7 @@ class LaunchActivity : AppCompatActivity() {
 
         popup.show()
     }
+
 
     private fun checkStoragePermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -739,9 +798,10 @@ class LaunchActivity : AppCompatActivity() {
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
 
-
     }
 
 }
+
+
 
 

@@ -237,46 +237,141 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <EditText
-                android:id="@+id/ed_RightEye"
-                android:layout_width="match_parent"
+                android:id="@+id/ed_RightEye_ax"
+                android:layout_width="100dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="24dp"
-
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/bt_background"
-                android:hint="نمره چشم راست"
+                android:gravity="center"
+                android:hint="AX"
+                android:inputType="number"
+                android:maxLength="3"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ed_RightEye_syl"
+                app:layout_constraintTop_toBottomOf="@+id/rb_liner"
+                tools:ignore="DuplicateIds" />
+
+            <TextView
+                android:id="@+id/ed_RightEye_syl"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:text=""
+                android:background="@drawable/bt_background"
+                android:gravity="center"
+                android:textDirection="ltr"
+                android:hint="SYL"
                 android:inputType="text"
                 android:padding="4dp"
                 android:textColor="@color/black"
-
                 android:textSize="20dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rb_liner"
+                app:layout_constraintBottom_toBottomOf="@+id/ed_RightEye_ax"
+                app:layout_constraintEnd_toStartOf="@+id/ed_RightEye_ax"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ed_RightEye_sph"
+                app:layout_constraintTop_toTopOf="@+id/ed_RightEye_ax"
+                tools:ignore="DuplicateIds" />
 
-                />
-
-            <EditText
-                android:id="@+id/ed_LeftEye"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/ed_RightEye_sph"
+                android:layout_width="100dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="24dp"
                 android:background="@drawable/bt_background"
-                android:hint="نمره چشم چپ"
-                android:inputType="textMultiLine"
+                android:gravity="center"
+                android:hint="SPH"
+                android:textDirection="ltr"
+                android:text=""
+                android:inputType="text"
                 android:padding="4dp"
                 android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ed_RightEye_syl"
+                app:layout_constraintEnd_toStartOf="@+id/ed_RightEye_syl"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ed_RightEye_syl"
+                tools:ignore="DuplicateIds" />
 
+            <EditText
+                android:id="@+id/ed_LeftEye_ax"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bt_background"
+                android:gravity="center"
+                android:hint="AX"
+                android:inputType="number"
+                android:maxLength="3"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ed_LeftEye_syl"
+                app:layout_constraintTop_toBottomOf="@+id/ed_RightEye_ax" />
+
+            <TextView
+                android:id="@+id/ed_LeftEye_syl"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:text=""
+                android:background="@drawable/bt_background"
+                android:gravity="center"
+                android:hint="SYL"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textDirection="ltr"
+                android:textColor="@color/black"
                 android:textSize="20dp"
 
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ed_RightEye"
+                app:layout_constraintBottom_toBottomOf="@+id/ed_LeftEye_ax"
+                app:layout_constraintEnd_toStartOf="@+id/ed_LeftEye_ax"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ed_LeftEye_sph"
+                app:layout_constraintTop_toTopOf="@+id/ed_LeftEye_ax" />
 
-                />
+            <TextView
+                android:id="@+id/ed_LeftEye_sph"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_background"
+                android:gravity="center"
+                android:hint="SPH"
+                android:text=""
+                android:inputType="text"
+                android:textDirection="ltr"
+                android:padding="4dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+
+                app:layout_constraintBottom_toBottomOf="@+id/ed_LeftEye_ax"
+                app:layout_constraintEnd_toStartOf="@+id/ed_LeftEye_syl"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OD"
+                android:textColor="@color/black"
+                android:textSize="24dp"
+                app:layout_constraintEnd_toEndOf="@+id/ed_RightEye_ax"
+                app:layout_constraintTop_toBottomOf="@+id/rb_liner" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OS"
+                android:textColor="@color/black"
+                android:textSize="24dp"
+                app:layout_constraintEnd_toEndOf="@+id/ed_RightEye_ax"
+                app:layout_constraintTop_toBottomOf="@+id/ed_RightEye_syl" />
 
             <EditText
                 android:id="@+id/ed_pd"
@@ -295,7 +390,7 @@
                 android:textSize="20dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ed_LeftEye"
+                app:layout_constraintTop_toBottomOf="@id/ed_LeftEye_ax"
 
                 />
 

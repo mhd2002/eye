@@ -23,5 +23,5 @@ class UserID(
     val organization: String,
     val ext: String,
     val image_data: String,
-    val PatientHistory : Int
+
 ): Parcelable
