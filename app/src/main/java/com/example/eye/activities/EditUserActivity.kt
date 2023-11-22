@@ -13,9 +13,13 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -42,12 +46,31 @@ class EditUserActivity : AppCompatActivity() {
     var id by Delegates.notNull<Long>()
     lateinit var image_data: ByteArray
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.edRightEyeSph.setOnClickListener {
+            showPopupMenu(it, "edRightEyeSph")
+
+        }
+
+        binding.edRightEyeSyl.setOnClickListener {
+
+            showPopupMenu(it, "edRightEyeSyl")
+        }
+
+        binding.edLeftEyeSph.setOnClickListener {
+            showPopupMenu(it, "edLeftEyeSph")
+
+        }
+
+        binding.edLeftEyeSyl.setOnClickListener {
+            showPopupMenu(it, "edLeftEyeSyl")
+
+        }
 
         setValue()
 
@@ -183,8 +206,7 @@ class EditUserActivity : AppCompatActivity() {
                 val codemeli = binding.edCodemeli.text.toString()
                 val doctor = binding.edDoctor.text.toString()
                 val money = binding.edMoney.text.toString()
-                val lefteye = binding.edLeftEyeAx.text.toString()
-                val righteye = binding.edRightEyeAx.text.toString()
+
                 val pd = binding.edPd.text.toString()
                 val insurance = binding.edInsurance.text.toString()
                 val insuranceSt = binding.edInsuranceStocks.text.toString()
@@ -198,11 +220,18 @@ class EditUserActivity : AppCompatActivity() {
                     pay = "1"
                 }
 
+                val lefteye =
+                    binding.edLeftEyeSph.text.toString() + "   " + binding.edLeftEyeSyl.text.toString() +
+                            "   " + binding.edLeftEyeAx.text.toString()
+
+                val righteye =
+                    binding.edRightEyeSph.text.toString() + "   " + binding.edRightEyeSyl.text.toString() +
+                            "   " + binding.edRightEyeAx.text.toString()
 
                 val user = User(
-                   id , name, lastname, phone, codemeli, doctor,
+                    id, name, lastname, phone, codemeli, doctor,
                     prescriptionDate, purchaseDate, money, pay, righteye, lefteye,
-                    pd, insurance, insuranceSt, orgi, ext , image_data
+                    pd, insurance, insuranceSt, orgi, ext, image_data
 
                 )
 
@@ -213,6 +242,83 @@ class EditUserActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    private fun showPopupMenu(view: View, s: String) {
+        val popup = PopupMenu(this, view)
+
+        val start = -16.0
+        val end = 16.0
+        val step = 0.25
+
+        if (step <= 0) {
+            throw IllegalArgumentException("Step must be a positive value")
+        }
+
+        var currentValue = start
+        var menuIndex = 0
+
+        while (currentValue <= end) {
+            popup.menu.add(
+                Menu.NONE,
+                Menu.FIRST + menuIndex,
+                Menu.NONE,
+                currentValue.toString()
+            )
+
+            currentValue += step
+            menuIndex++
+        }
+
+        popup.setOnMenuItemClickListener { item: MenuItem? ->
+            currentValue = start
+
+
+            menuIndex = 0
+            while (currentValue <= end) {
+
+                if (item!!.itemId == Menu.FIRST + menuIndex) {
+
+                    when (s) {
+
+                        "edRightEyeSph" -> {
+
+                            binding.edRightEyeSph.text = currentValue.toString()
+                            binding.edRightEyeSph.hint = "done"
+                        }
+
+                        "edRightEyeSyl" -> {
+
+                            binding.edRightEyeSyl.text = currentValue.toString()
+                            binding.edRightEyeSyl.hint = "done"
+
+                        }
+
+                        "edLeftEyeSph" -> {
+
+                            binding.edLeftEyeSph.text = currentValue.toString()
+                            binding.edLeftEyeSph.hint = "done"
+                        }
+
+                        "edLeftEyeSyl" -> {
+                           
+                            binding.edLeftEyeSyl.text = currentValue.toString()
+                            binding.edLeftEyeSyl.hint = "done"
+                        }
+
+                    }
+
+                    break
+                }
+
+                currentValue += step
+                menuIndex++
+            }
+
+            true
+        }
+
+        popup.show()
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -227,8 +333,6 @@ class EditUserActivity : AppCompatActivity() {
         binding.edPrescriptionDate.text = user.prescriptionDate
         binding.edPurchaseDate.text = user.purchaseDate
         binding.edMoney.setText(user.money)
-        binding.edRightEyeAx.setText(user.RightEye)
-        binding.edLeftEyeAx.setText(user.LeftEye)
         binding.edPd.setText(user.pd)
         binding.edInsurance.setText(user.insurance)
         binding.edInsuranceStocks.setText(user.insuranceStocks)
@@ -256,13 +360,51 @@ class EditUserActivity : AppCompatActivity() {
 
                 image_data = img_bitmap
 
-                    inputStream.close()
+                inputStream.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
 
+        val separatedWords = separateWords(user.RightEye)
+        val separatedWords1 = separateWords(user.LeftEye)
 
+        var _right = ArrayList<String>()
+        for (word in separatedWords) {
+
+            _right.add(word)
+        }
+
+        var _left = ArrayList<String>()
+        for (word in separatedWords1) {
+
+            _left.add(word)
+        }
+
+        try{
+            binding.edLeftEyeAx.setText(_left[6])
+            binding.edLeftEyeSyl.text = (_left[3])
+            binding.edLeftEyeSph.text = (_left[0])
+
+            binding.edRightEyeAx.setText(_right[6])
+            binding.edRightEyeSyl.text = (_right[3])
+            binding.edRightEyeSph.text = (_right[0])
+        }catch (E:Exception){
+
+        }
+
+
+
+
+
+// binding.edRightEyeAx.setText(user.RightEye)
+        // binding.edLeftEyeAx.setText(user.LeftEye)
+
+
+    }
+
+    fun separateWords(input: String): Array<String> {
+        return input.split(" ").toTypedArray()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -270,7 +412,7 @@ class EditUserActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
 
-            val filePath =   data!!.getStringExtra("ok")
+            val filePath = data!!.getStringExtra("ok")
 
             val file = filePath?.let { File(it) }
 

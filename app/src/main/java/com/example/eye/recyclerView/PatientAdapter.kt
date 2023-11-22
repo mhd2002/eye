@@ -8,10 +8,8 @@ import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eye.R
-import org.w3c.dom.Text
 
 class PatientAdapter(var mList: List<PatientData>, val context: Context) :
     RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
@@ -22,7 +20,7 @@ class PatientAdapter(var mList: List<PatientData>, val context: Context) :
         val name: TextView = itemView.findViewById(R.id.tv_name)
         val meli: TextView = itemView.findViewById(R.id.tv_code_meli)
         val edit: ImageView = itemView.findViewById(R.id.im_edit)
-        val history :TextView = itemView.findViewById(R.id.history)
+        val date :TextView = itemView.findViewById(R.id.date)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PatientViewHolder {
@@ -50,6 +48,8 @@ class PatientAdapter(var mList: List<PatientData>, val context: Context) :
             ("نام و نام خانوادگی : " + mList[position].name + " " + mList[position].lastName)
 
         holder.meli.text = ("کدملی : " + mList[position].codeMeli)
+
+        holder.date.text = mList[position].purchaseDate
 
         holder.edit.setOnClickListener {
 

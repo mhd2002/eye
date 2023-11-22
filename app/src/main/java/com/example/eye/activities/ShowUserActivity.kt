@@ -34,8 +34,9 @@ class ShowUserActivity : AppCompatActivity() {
         binding.tvDate.text =
             "تاریخ نسخه : " + user.prescriptionDate + "  " + "تاریخ خرید : " + user.purchaseDate
         binding.tvMoney.text = "مبلغ : " + separateNumber(user.money.toLong()) + " ( " + pay + " ) "
-        binding.tvLeftEye.text = "OD : " + rearrangeNumbers(user.RightEye)
-        binding.tvRightEye.text = "OS : " + rearrangeNumbers(user.LeftEye)
+
+        binding.tvLeftEye.text = "OD : " + user.RightEye//rearrangeNumbers(user.RightEye)
+        binding.tvRightEye.text = "OS : " + user.LeftEye//rearrangeNumbers(user.LeftEye)
         binding.tvInsurance.text = "بیمه : " + user.insurance
         binding.tvPdAndInsuranceSt.text =
             "سهم بیمه : " + separateNumber(user.insuranceStocks.toLong()) + "    " + "pd : " + user.pd

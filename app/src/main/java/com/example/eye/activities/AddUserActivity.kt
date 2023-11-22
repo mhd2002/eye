@@ -45,10 +45,7 @@ class AddUserActivity : AppCompatActivity() {
     lateinit var prescriptionDate: String
     var pic: Boolean = false
     lateinit var img_bitmap: ByteArray
-    var rightEyeSph: String = ""
-    var rightEyeSyl: String = ""
-    var leftEyeSph: String = ""
-    var leftEyeSyl: String = ""
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -325,26 +322,25 @@ class AddUserActivity : AppCompatActivity() {
                     when (s) {
 
                         "edRightEyeSph" -> {
-                            rightEyeSph = currentValue.toString()
                             binding.edRightEyeSph.text = currentValue.toString()
                             binding.edRightEyeSph.hint = "done"
                         }
 
                         "edRightEyeSyl" -> {
-                            rightEyeSyl = currentValue.toString()
+
                             binding.edRightEyeSyl.text = currentValue.toString()
                             binding.edRightEyeSyl.hint = "done"
 
                         }
 
                         "edLeftEyeSph" -> {
-                            leftEyeSph = currentValue.toString()
+
                             binding.edLeftEyeSph.text = currentValue.toString()
                             binding.edLeftEyeSph.hint = "done"
                         }
 
                         "edLeftEyeSyl" -> {
-                            leftEyeSyl = currentValue.toString()
+
                             binding.edLeftEyeSyl.text = currentValue.toString()
                             binding.edLeftEyeSyl.hint = "done"
                         }
