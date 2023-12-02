@@ -236,6 +236,7 @@ class EditUserActivity : AppCompatActivity() {
                 )
 
                 viewModel.updateUser(user)
+
                 finish()
 
             }
@@ -392,13 +393,6 @@ class EditUserActivity : AppCompatActivity() {
         }catch (E:Exception){
 
         }
-
-
-
-
-
-// binding.edRightEyeAx.setText(user.RightEye)
-        // binding.edLeftEyeAx.setText(user.LeftEye)
 
 
     }

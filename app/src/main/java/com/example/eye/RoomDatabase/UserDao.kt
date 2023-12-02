@@ -27,4 +27,6 @@ interface UserDao {
     @Query("DELETE FROM ${DatabaseName.databasename} WHERE id = :id")
     fun deleteById(id: Long)
 
+    @Query("SELECT * FROM ${DatabaseName.databasename} WHERE codeMeli = :codeMeli ORDER BY id DESC LIMIT 1")
+    fun getLastUserByCodeMeli(codeMeli: String): User?
 }

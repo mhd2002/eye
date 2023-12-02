@@ -19,7 +19,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -27,6 +30,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -69,6 +73,8 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLaunchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
 
         checkPassWord()
         initRecyclerView()
@@ -299,7 +305,7 @@ class LaunchActivity : AppCompatActivity() {
                             i.insuranceStocks,
                             i.organization,
                             i.ext,
-                            i.image_data,
+                            i.image_data
 
                         )
 
@@ -310,7 +316,7 @@ class LaunchActivity : AppCompatActivity() {
                 }
 
             } catch (e: Exception) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, e.message.toString() , Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -323,13 +329,14 @@ class LaunchActivity : AppCompatActivity() {
 
         binding.btAdd.setOnLongClickListener { v ->
             if (v != null) {
-                  showPopup(v)
+                showPopup(v)
 
             }
             true
         }
 
     }
+
 
     private fun checkPassWord() {
 
@@ -366,62 +373,6 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
-  /*  private fun showPopupMenu(view: View, s: String) {*
-        val popup = PopupMenu(this, view)
-
-        val start = -16.0
-        val end = 16.0
-        val step = 0.25
-
-        var currentValue = start
-
-        while (currentValue <= end) {
-
-            popup.menu.add(
-                Menu.NONE,
-                Menu.FIRST + currentValue.toInt(),
-                Menu.NONE,
-                currentValue.toString()
-            )
-
-            currentValue += step
-        }
-
-        popup.setOnMenuItemClickListener { item: MenuItem? ->
-
-            currentValue = start
-            binding.textView.text = ""
-
-            while (currentValue <= end) {
-
-                binding.textView.append(currentValue.toString())
-                when (item!!.itemId) {
-
-                    Menu.FIRST + currentValue.toInt() -> {
-
-                        Toast.makeText(this, "$currentValue", Toast.LENGTH_SHORT).show()
-
-
-                        break
-                    }
-
-                }
-                currentValue += step
-
-            }
-
-            true
-        }
-
-        popup.show()
-
-    }
-
-
-*/
-
-
-
     private fun initRecyclerView() {
         binding.recyclerXml.setHasFixedSize(true)
         binding.recyclerXml.layoutManager = LinearLayoutManager(this)
@@ -434,7 +385,11 @@ class LaunchActivity : AppCompatActivity() {
 
             filteredList.clear()
             for (i in mList) {
-                if (i.name.contains(query) || i.codeMeli.contains(query)) {
+
+                if (i.name.contains(query) || i.codeMeli.contains(query) || i.lastName.contains(
+                        query
+                    )
+                ) {
                     filteredList.add(i)
 
                 }

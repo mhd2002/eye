@@ -1,10 +1,19 @@
 package com.example.eye.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import com.example.eye.Parcelable.UserID
+import com.example.eye.R
 import com.example.eye.databinding.ActivityShowUserBinding
 import java.io.File
 import java.io.FileInputStream
@@ -54,8 +63,13 @@ class ShowUserActivity : AppCompatActivity() {
                 val retrievedBitmap =
                     BitmapFactory.decodeByteArray(img_bitmap, 0, img_bitmap.size)
                 binding.im.setImageBitmap(retrievedBitmap)
+                val bit = retrievedBitmap
+                binding.im.setOnClickListener {
+                    showImageDialog(bit)
+                }
+
                 file.delete()
-                
+
 
                 inputStream.close()
             } catch (e: IOException) {
@@ -63,22 +77,32 @@ class ShowUserActivity : AppCompatActivity() {
             }
         }
 
+    }
 
+    private fun showImageDialog(bitmap: Bitmap) {
+
+        val imageView = ImageView(this)
+        imageView.setImageBitmap(bitmap)
+
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        imageView.layoutParams = layoutParams
+
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setView(imageView)
+            .setPositiveButton("OK") { _, _ ->
+
+            }.show()
     }
 
     private fun separateNumber(number: Long): String {
         return String.format("%,d", number)
     }
-    fun rearrangeNumbers(input: String): String {
-        // Step 1: Split the string into individual numbers
-        val numbers = input.split(" ")
 
-        // Step 2: Rearrange the numbers in the desired order
-        val rearrangedNumbers = numbers.reversed()
-
-        // Step 3: Join the numbers into a string and update the TextView
-        return rearrangedNumbers.joinToString(" ")
-    }
     override fun onDestroy() {
         finish()
         super.onDestroy()

@@ -114,16 +114,19 @@ class CameraActivity : AppCompatActivity() {
 
                     runOnUiThread {
 
-
                         binding.imageView.setImageURI(output.savedUri)
                         binding.btSave.visibility = View.VISIBLE
 
                         binding.btSave.setOnClickListener {
 
                             val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+
+                            val resizedBitmap = createScaledBitmap(bitmap, 500, 500)
+
                             val byteArrayOutputStream = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream)
+                            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream)
                             val byteArray = byteArrayOutputStream.toByteArray()
+
 
                             val file = File(this@CameraActivity.cacheDir, "large_data.dat")
 
@@ -152,7 +155,9 @@ class CameraActivity : AppCompatActivity() {
             }
         )
     }
-
+    private fun createScaledBitmap(originalBitmap: Bitmap, reqWidth: Int, reqHeight: Int): Bitmap {
+        return Bitmap.createScaledBitmap(originalBitmap, reqWidth, reqHeight, true)
+    }
     private fun getOutputDirectory(): File {
         val mediaDir = externalMediaDirs.firstOrNull()?.let {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
