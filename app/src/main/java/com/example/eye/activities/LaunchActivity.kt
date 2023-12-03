@@ -8,6 +8,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.AsyncTask
@@ -21,6 +22,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -53,6 +55,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import java.text.FieldPosition
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -205,6 +208,7 @@ class LaunchActivity : AppCompatActivity() {
 
                         val intent = Intent(this@LaunchActivity, EditUserActivity::class.java)
                         val file = File(this@LaunchActivity.cacheDir, "large_data.dat")
+
                         try {
                             val outputStream = FileOutputStream(file)
                             outputStream.write(mList[position].image_data)
@@ -243,15 +247,7 @@ class LaunchActivity : AppCompatActivity() {
 
                 } else {
 
-//                    if (binding.searchView.query.toString() == "") {
-//
-//                        viewModel.deleteById(mList[position].id)
-//
-//                    } else {
-//
-//                        viewModel.deleteById(filteredList[position].id)
-//
-//                    }
+                    deleteUserDialog(position)
 
                 }
 
@@ -405,6 +401,25 @@ class LaunchActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun deleteUserDialog(position: Int) {
+
+        AlertDialog.Builder(this).setPositiveButton("OK") { _, _ ->
+
+            if (binding.searchView.query.toString() == "") {
+
+                viewModel.deleteById(mList[position].id)
+
+            } else {
+
+                viewModel.deleteById(filteredList[position].id)
+
+            }
+
+        }.setNegativeButton("cancel") { _, _ ->
+
+        }.setTitle("ایا مطمعن هستید ؟").show()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
