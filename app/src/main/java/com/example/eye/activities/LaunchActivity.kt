@@ -78,7 +78,6 @@ class LaunchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         checkPassWord()
         initRecyclerView()
 
@@ -455,7 +454,6 @@ class LaunchActivity : AppCompatActivity() {
 
         popup.show()
     }
-
 
     private fun checkStoragePermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

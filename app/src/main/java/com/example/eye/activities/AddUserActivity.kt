@@ -28,7 +28,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -39,7 +38,6 @@ import com.example.eye.camera.CameraActivity
 import okio.IOException
 import java.io.File
 import java.io.FileInputStream
-import kotlin.properties.Delegates
 
 class AddUserActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddUserAtivityBinding
@@ -230,10 +228,10 @@ class AddUserActivity : AppCompatActivity() {
             } else if (!pic) {
                 Toast.makeText(this, "لطفا عکس را وارد کنید", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edLeftEyeAx.text.toString().toInt() >= 180) {
+            } else if (binding.edLeftEyeAx.text.toString().toInt() >= 181) {
                 Toast.makeText(this, "مقدار ax چپ را درست وارد کنید", Toast.LENGTH_SHORT).show()
 
-            } else if (binding.edRightEyeAx.text.toString().toInt() >= 180) {
+            } else if (binding.edRightEyeAx.text.toString().toInt() >= 181) {
                 Toast.makeText(this, "مقدار ax راست را درست وارد کنید", Toast.LENGTH_SHORT).show()
 
             } else {
@@ -301,8 +299,6 @@ class AddUserActivity : AppCompatActivity() {
                         val separatedWords1 = separateWords(lastCodemeliData.LeftEye)
 
 
-
-
                         for (word in separatedWords) {
 
                             _right.add(word)
@@ -314,42 +310,74 @@ class AddUserActivity : AppCompatActivity() {
                             _left.add(word)
                         }
 
-                        val ax_left = _left[6].toDouble() + 20
-                        val syl_left = _left[3].toDouble() + 0.5
-                        val sph_left = _left[0].toDouble() + 0.5
-
-                        val ax_right = _right[6].toDouble() + 20
-                        val syl_right = _right[3].toDouble() + 0.5
-                        val sph_right = _right[0].toDouble() + 0.5
-
-                        val axLeft = binding.edLeftEyeAx.text.toString().toDouble() - ax_left
-                        val sylLeft = binding.edLeftEyeSyl.text.toString().toDouble() - syl_left
-                        val sphleft = binding.edLeftEyeSph.text.toString().toDouble() - sph_left
-
-                        val axRight = binding.edRightEyeAx.text.toString().toDouble() - ax_right
-                        val sylRight =
-                            binding.edRightEyeSyl.text.toString().toDouble() - syl_right
-                        val sphRight =
-                            binding.edRightEyeSph.text.toString().toDouble() - sph_right
+                        val ax_left_up = _left[6].toDouble() + 20
+                        val syl_left_up = _left[3].toDouble() + 0.5
+                        val sph_left_up = _left[0].toDouble() + 0.5
 
 
-                        if (axLeft > 0 || axRight > 0 || sylLeft > 0 || sylRight > 0 && sphRight > 0 || sphleft > 0) {
+                        val ax_right_up = _right[6].toDouble() + 20
+                        val syl_right_up = _right[3].toDouble() + 0.5
+                        val sph_right_up = _right[0].toDouble() + 0.5
+                        
+                        val axLeft_up = binding.edLeftEyeAx.text.toString().toDouble() - ax_left_up
+                        val sylLeft_up =
+                            binding.edLeftEyeSyl.text.toString().toDouble() - syl_left_up
+                        val sphleft_up =
+                            binding.edLeftEyeSph.text.toString().toDouble() - sph_left_up
+
+                        val axRight_up =
+                            binding.edRightEyeAx.text.toString().toDouble() - ax_right_up
+                        val sylRight_up =
+                            binding.edRightEyeSyl.text.toString().toDouble() - syl_right_up
+                        val sphRight_up =
+                            binding.edRightEyeSph.text.toString().toDouble() - sph_right_up
+
+////////////////////////////////////////////////////
+
+                        val ax_left_down = _left[6].toDouble() - 20
+                        val syl_left_down = _left[3].toDouble() - 0.5
+                        val sph_left_down = _left[0].toDouble() - 0.5
+
+                        val ax_right_down = _right[6].toDouble() - 20
+                        val syl_right_down = _right[3].toDouble() - 0.5
+                        val sph_right_down = _right[0].toDouble() - 0.5
+
+                        val axLeft_down =
+                            binding.edLeftEyeAx.text.toString().toDouble() - ax_left_down
+                        val sylLeft_down =
+                            binding.edLeftEyeSyl.text.toString().toDouble() - syl_left_down
+                        val sphleft_down =
+                            binding.edLeftEyeSph.text.toString().toDouble() - sph_left_down
+
+                        val axRight_down =
+                            binding.edRightEyeAx.text.toString().toDouble() - ax_right_down
+                        val sylRight_down =
+                            binding.edRightEyeSyl.text.toString().toDouble() - syl_right_down
+                        val sphRight_down =
+                            binding.edRightEyeSph.text.toString().toDouble() - sph_right_down
+
+
+                        if (axLeft_up > 0 || axRight_up > 0 || axLeft_down < 0 || axRight_down < 0) {
 
                             dialogForCheck(
-                                axLeft,
-                                sylLeft,
-                                sphleft,
-                                axRight,
-                                sylRight,
-                                sphRight, user
+                                true,
+                                user
                             )
 
-                        }else{
-                            addTodatabase(user)
+                        } else  if (sylLeft_up > 0 || sphleft_up > 0 || sphRight_up > 0 || sylRight_up > 0  ||
+                            sylLeft_down < 0 || sphleft_down < 0 || sylRight_down < 0 || sphRight_down < 0) {
+
+                            dialogForCheck(
+                                false,
+                                user
+                            )
+
+                        }else {
+                            addToDatabase(user)
                         }
 
-                    }else{
-                        addTodatabase(user)
+                    } else {
+                        addToDatabase(user)
                     }
 
                 } catch (
@@ -361,13 +389,13 @@ class AddUserActivity : AppCompatActivity() {
                 }
 
 
-
             }
 
         }
 
     }
-    fun addTodatabase(user: User) {
+
+    fun addToDatabase(user: User) {
         try {
             viewModel.insertUser(user)
 
@@ -380,92 +408,32 @@ class AddUserActivity : AppCompatActivity() {
     }
 
     private fun dialogForCheck(
-        axLeft: Double,
-        sylLeft: Double,
-        sphleft: Double,
-        axRight: Double,
-        sylRight: Double,
-        sphRight: Double,
+        isAx: Boolean,
         user: User
     ) {
 
-        val layout = LinearLayout(this)
-
-        if (axLeft > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  ax left = $axLeft"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        if (sylLeft > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  syl left = $sylLeft"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        if (sphleft > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  sph left = $sphleft"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        if (axRight > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  ax right = $axRight"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        if (sylRight > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  syl right = $sylRight"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        if (sphRight > 0.0) {
-
-            val tv_axLeft = TextView(this)
-            tv_axLeft.text = "  sph right = $sphRight"
-            tv_axLeft.setTextColor(android.graphics.Color.BLACK) // Use Color.BLACK for black color            // Set text size
-            tv_axLeft.textSize = 24f
-            layout.addView(tv_axLeft)
-        }
-
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        val marginLayoutParams = ViewGroup.MarginLayoutParams(layoutParams)
-        marginLayoutParams.setMargins(16, 16, 16, 16) // Adjust the margins as needed
-        layout.layoutParams = marginLayoutParams
-        layout.orientation = LinearLayout.VERTICAL
-
 
         val builder = AlertDialog.Builder(this)
-        builder.setView(layout)
+        builder.setTitle("توجه !!!")
 
-            .setPositiveButton("OK") { _, _ ->
-                addTodatabase(user)
-            }.setNegativeButton("cancel"){_,_ ->
+        if (isAx) {
+            builder.setMessage("آکس مشکوک به تقلب !!!")
+        } else {
+            builder.setMessage("نمره مغایرت دارد !!!")
 
-            }
-            .setTitle("توجه !!!")
-            .show()
+        }
+
+        builder.setPositiveButton("تایید") { _, _ ->
+        addToDatabase(user)
+        }
+        builder.setNegativeButton("لغو"){ _ , _ ->
+
+        }
+
+        builder.setCancelable(false)
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+
     }
 
 
