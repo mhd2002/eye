@@ -1,5 +1,6 @@
 package com.example.eye.activities
 
+import ExcelExporter
 import android.Manifest
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
@@ -42,6 +43,7 @@ import com.example.eye.R
 import com.example.eye.RoomDatabase.User
 import com.example.eye.RoomDatabase.UserDatabase
 import com.example.eye.databinding.ActivityLaunchBinding
+import com.example.eye.excel.ExcelUsers
 import com.example.eye.recyclerView.PatientAdapter
 import com.example.eye.recyclerView.PatientData
 import com.example.eye.viewModel.MainActivityViewModel
@@ -446,7 +448,14 @@ class LaunchActivity : AppCompatActivity() {
 
                 }
 
+                R.id.menu_exportExcel -> {
+                    if (!checkStoragePermissions()) {
 
+                        requestForStoragePermissions()
+                    }
+
+                    exportExcelTask().execute()
+                }
             }
 
             true
@@ -671,6 +680,7 @@ class LaunchActivity : AppCompatActivity() {
     inner class import(val fileName: String) : AsyncTask<Void, Void, Int>() {
         lateinit var progressDialog: ProgressDialog
         override fun onPreExecute() {
+
             progressDialog = ProgressDialog(this@LaunchActivity)
             progressDialog.setMessage("وارد کردن اطلاعات ...")
             progressDialog.setCancelable(false)
@@ -699,6 +709,7 @@ class LaunchActivity : AppCompatActivity() {
 
     inner class delete : AsyncTask<Void, Void, Int>() {
         lateinit var progressDialog: ProgressDialog
+        @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
             progressDialog = ProgressDialog(this@LaunchActivity)
             progressDialog.setMessage("حذف کردن اطلاعات ...")
@@ -709,6 +720,7 @@ class LaunchActivity : AppCompatActivity() {
             super.onPreExecute()
         }
 
+        @Deprecated("Deprecated in Java")
         @RequiresApi(Build.VERSION_CODES.N)
         override fun doInBackground(vararg p0: Void?): Int {
 
@@ -717,12 +729,123 @@ class LaunchActivity : AppCompatActivity() {
             return 0
         }
 
+        @Deprecated("Deprecated in Java")
         @SuppressLint("SetTextI18n")
         override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
 
             progressDialog.dismiss()
 
+        }
+    }
+
+    inner class exportExcelTask : AsyncTask<Void, Void, Int>() {
+
+        lateinit var progressDialog: ProgressDialog
+
+        override fun onPreExecute() {
+
+            progressDialog = ProgressDialog(this@LaunchActivity)
+            progressDialog.setMessage("خروجی گرفتن اکسل ...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg p0: Void?): Int {
+            exportingExcel()
+            return 0
+        }
+
+        override fun onPostExecute(result: Int?) {
+            progressDialog.dismiss()
+            super.onPostExecute(result)
+        }
+
+    }
+
+    private fun exportingExcel() {
+
+        val excelExporter = ExcelExporter(this)
+
+        val patientDataList = ArrayList<ExcelUsers>().apply {
+            add(
+                ExcelUsers(
+                    "نام",
+                    "نام خانوادگی",
+                    "شماره تماس",
+                    "کد ملی",
+                    "دکتر",
+                    "تاریخ نسخه",
+                    "تاریخ خرید",
+                    "قیمت",
+                    "نحوه پرداخت",
+                    "نمره چشم راست",
+                    "نمره چشم چپ",
+                    "pd",
+                    "بیمه",
+                    "سهم بیمه",
+                    "سازمان",
+                    "توضیحات"
+                )
+            )
+
+            for (i in mList) {
+
+                add(
+                    ExcelUsers(
+                        i.name,
+                        i.lastName,
+                        i.mobile,
+                        i.codeMeli,
+                        i.doctor,
+                        i.prescriptionDate,
+                        i.purchaseDate,
+                        i.money,
+                        i.pay,
+                        i.RightEye,
+                        i.LeftEye,
+                        i.pd,
+                        i.insurance,
+                        i.insuranceStocks,
+                        i.organization,
+                        i.ext
+                    )
+                )
+            }
+
+        }
+
+        val nestedList: List<List<String>> = convertToNestedList(patientDataList)
+
+        val fileName = "example.xlsx"
+
+        excelExporter.exportToExcel(fileName, nestedList)
+
+    }
+
+    fun convertToNestedList(patientDataList: ArrayList<ExcelUsers>): List<List<String>> {
+        return patientDataList.map { excelUsers ->
+            listOf(
+                excelUsers.name,
+                excelUsers.lastName,
+                excelUsers.codeMeli,
+                excelUsers.doctor,
+                excelUsers.mobile,
+                excelUsers.LeftEye,
+                excelUsers.RightEye,
+                excelUsers.insurance,
+                excelUsers.insuranceStocks,
+                excelUsers.money,
+                excelUsers.pd,
+                excelUsers.pay,
+                excelUsers.prescriptionDate,
+                excelUsers.purchaseDate,
+                excelUsers.ext,
+                excelUsers.organization
+
+            )
         }
     }
 
@@ -769,6 +892,8 @@ class LaunchActivity : AppCompatActivity() {
     }
 
 }
+
+
 
 
 

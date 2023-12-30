@@ -56,9 +56,6 @@ class AddUserActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this)[MainActivityViewModel::class.java]
 
 
-
-
-
         binding.edRightEyeSph.setOnClickListener {
             showPopupMenu(it, "edRightEyeSph")
 
@@ -318,7 +315,7 @@ class AddUserActivity : AppCompatActivity() {
                         val ax_right_up = _right[6].toDouble() + 20
                         val syl_right_up = _right[3].toDouble() + 0.5
                         val sph_right_up = _right[0].toDouble() + 0.5
-                        
+
                         val axLeft_up = binding.edLeftEyeAx.text.toString().toDouble() - ax_left_up
                         val sylLeft_up =
                             binding.edLeftEyeSyl.text.toString().toDouble() - syl_left_up
