@@ -1,5 +1,7 @@
 import android.content.Context
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.support.multidex.MultiDexApplication
 import android.widget.Toast
 import org.apache.poi.ss.usermodel.Cell
@@ -9,8 +11,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExcelExporter(private val context: Context)  : MultiDexApplication(){
+class ExcelExporter(private val context: Context) : MultiDexApplication() {
 
+    private val handler = Handler(Looper.getMainLooper())
     fun exportToExcel(fileName: String, data: List<List<String>>) {
         val workbook = XSSFWorkbook()
         val sheet = workbook.createSheet("Sheet1")
@@ -38,15 +41,26 @@ class ExcelExporter(private val context: Context)  : MultiDexApplication(){
         )
 
         try {
+
             val fileOutputStream = FileOutputStream(file)
+
             workbook.write(fileOutputStream)
             fileOutputStream.close()
 
-            Toast.makeText(context, "Excel file saved to: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-        } catch (e: IOException) {
-            e.printStackTrace()
 
-            Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
+            handler.post {
+                Toast.makeText(
+                    context,
+                    "Excel file saved to: ${file.absolutePath}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        } catch (e: IOException) {
+
+            handler.post {
+                Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

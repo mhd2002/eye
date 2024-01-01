@@ -9,7 +9,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.AsyncTask
@@ -18,14 +17,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -33,7 +27,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
-import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -57,9 +50,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.text.FieldPosition
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 
 @SuppressLint("CustomSplashScreen")
@@ -453,8 +443,8 @@ class LaunchActivity : AppCompatActivity() {
 
                         requestForStoragePermissions()
                     }
+                    getFileNameOfExcelFile()
 
-                    exportExcelTask().execute()
                 }
             }
 
@@ -463,6 +453,28 @@ class LaunchActivity : AppCompatActivity() {
 
         popup.show()
     }
+
+    private fun getFileNameOfExcelFile(){
+
+        val inputEditText = EditText(this)
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("نام فایل را برای خروجی گرفتن از اطلاعات وارد کنید.")
+        builder.setView(inputEditText)
+        builder.setPositiveButton("OK") { _, _ ->
+
+            val userInput = inputEditText.text.toString()
+
+            ExportExcelTask(userInput).execute()
+
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+
+
+    }
+
 
     private fun checkStoragePermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -709,6 +721,7 @@ class LaunchActivity : AppCompatActivity() {
 
     inner class delete : AsyncTask<Void, Void, Int>() {
         lateinit var progressDialog: ProgressDialog
+
         @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
             progressDialog = ProgressDialog(this@LaunchActivity)
@@ -739,10 +752,12 @@ class LaunchActivity : AppCompatActivity() {
         }
     }
 
-    inner class exportExcelTask : AsyncTask<Void, Void, Int>() {
+    @SuppressLint("StaticFieldLeak")
+    inner class ExportExcelTask(val fileName: String) : AsyncTask<Void, Void, Void>() {
 
         lateinit var progressDialog: ProgressDialog
 
+        @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
 
             progressDialog = ProgressDialog(this@LaunchActivity)
@@ -753,19 +768,21 @@ class LaunchActivity : AppCompatActivity() {
             super.onPreExecute()
         }
 
-        override fun doInBackground(vararg p0: Void?): Int {
-            exportingExcel()
-            return 0
+        @Deprecated("Deprecated in Java")
+        override fun doInBackground(vararg p0: Void?): Void? {
+            exportingExcel(fileName)
+            return null
         }
 
-        override fun onPostExecute(result: Int?) {
+        @Deprecated("Deprecated in Java")
+        override fun onPostExecute(result: Void?) {
             progressDialog.dismiss()
             super.onPostExecute(result)
         }
 
     }
 
-    private fun exportingExcel() {
+    private fun exportingExcel(fileName: String) {
 
         val excelExporter = ExcelExporter(this)
 
@@ -819,9 +836,7 @@ class LaunchActivity : AppCompatActivity() {
 
         val nestedList: List<List<String>> = convertToNestedList(patientDataList)
 
-        val fileName = "example.xlsx"
-
-        excelExporter.exportToExcel(fileName, nestedList)
+        excelExporter.exportToExcel("$fileName.xlsx", nestedList)
 
     }
 
