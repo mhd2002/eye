@@ -689,8 +689,10 @@ class LaunchActivity : AppCompatActivity() {
         }
     }
 
-    inner class import(val fileName: String) : AsyncTask<Void, Void, Int>() {
-        lateinit var progressDialog: ProgressDialog
+    @SuppressLint("StaticFieldLeak")
+    inner class import(private val fileName: String) : AsyncTask<Void, Void, Int>() {
+        private lateinit var progressDialog: ProgressDialog
+        @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
 
             progressDialog = ProgressDialog(this@LaunchActivity)
@@ -702,7 +704,7 @@ class LaunchActivity : AppCompatActivity() {
             super.onPreExecute()
         }
 
-        @RequiresApi(Build.VERSION_CODES.N)
+        @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg p0: Void?): Int {
             importData(fileName)
 
@@ -734,7 +736,6 @@ class LaunchActivity : AppCompatActivity() {
         }
 
         @Deprecated("Deprecated in Java")
-        @RequiresApi(Build.VERSION_CODES.N)
         override fun doInBackground(vararg p0: Void?): Int {
 
             viewModel.deleteAllUser()
@@ -797,7 +798,7 @@ class LaunchActivity : AppCompatActivity() {
                     "تاریخ نسخه",
                     "تاریخ خرید",
                     "قیمت",
-                    "نحوه پرداخت",
+                    "نحوه پرداخت(0=نقدی ؛ 1= چکی)",
                     "نمره چشم راست",
                     "نمره چشم چپ",
                     "pd",
@@ -859,7 +860,6 @@ class LaunchActivity : AppCompatActivity() {
                 excelUsers.purchaseDate,
                 excelUsers.ext,
                 excelUsers.organization
-
             )
         }
     }
