@@ -259,12 +259,21 @@ class EditUserActivity : AppCompatActivity() {
         var currentValue = start
         var menuIndex = 0
 
+
+
         while (currentValue <= end) {
+
+            var menuName = " "
+
+            if (currentValue > 0 ){
+                menuName = "+"
+            }
+
             popup.menu.add(
                 Menu.NONE,
                 Menu.FIRST + menuIndex,
                 Menu.NONE,
-                currentValue.toString()
+                menuName+currentValue.toString()
             )
 
             currentValue += step
@@ -280,30 +289,37 @@ class EditUserActivity : AppCompatActivity() {
 
                 if (item!!.itemId == Menu.FIRST + menuIndex) {
 
+
+                    var menuName = " "
+
+                    if (currentValue > 0 ){
+                        menuName = "+"
+                    }
+
                     when (s) {
 
                         "edRightEyeSph" -> {
 
-                            binding.edRightEyeSph.text = currentValue.toString()
+                            binding.edRightEyeSph.text = menuName+currentValue.toString()
                             binding.edRightEyeSph.hint = "done"
                         }
 
                         "edRightEyeSyl" -> {
 
-                            binding.edRightEyeSyl.text = currentValue.toString()
+                            binding.edRightEyeSyl.text = menuName+currentValue.toString()
                             binding.edRightEyeSyl.hint = "done"
 
                         }
 
                         "edLeftEyeSph" -> {
 
-                            binding.edLeftEyeSph.text = currentValue.toString()
+                            binding.edLeftEyeSph.text = menuName+currentValue.toString()
                             binding.edLeftEyeSph.hint = "done"
                         }
 
                         "edLeftEyeSyl" -> {
                            
-                            binding.edLeftEyeSyl.text = currentValue.toString()
+                            binding.edLeftEyeSyl.text = menuName+currentValue.toString()
                             binding.edLeftEyeSyl.hint = "done"
                         }
 

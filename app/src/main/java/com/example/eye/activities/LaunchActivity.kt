@@ -798,7 +798,7 @@ class LaunchActivity : AppCompatActivity() {
                     "تاریخ نسخه",
                     "تاریخ خرید",
                     "قیمت",
-                    "نحوه پرداخت(0=نقدی ؛ 1= چکی)",
+                    "نحوه پرداخت",
                     "نمره چشم راست",
                     "نمره چشم چپ",
                     "pd",
@@ -811,6 +811,14 @@ class LaunchActivity : AppCompatActivity() {
 
             for (i in mList) {
 
+
+             var pays = if (i.pay == "0"){
+                    "نقدی"
+                }else{
+                    "چکی"
+                }
+
+
                 add(
                     ExcelUsers(
                         i.name,
@@ -821,7 +829,7 @@ class LaunchActivity : AppCompatActivity() {
                         i.prescriptionDate,
                         i.purchaseDate,
                         i.money,
-                        i.pay,
+                        pays,
                         i.RightEye,
                         i.LeftEye,
                         i.pd,
